@@ -6,6 +6,7 @@ import ReConfirm from "./ReConfirm";
 import Login from "./Login";
 import Signup from "./Signup";
 import OnBoarding from "./OnBoarding";
+import Results from "./Results";
 
 export {
   Recipes,
@@ -16,4 +17,5 @@ export {
   Login,
   Signup,
   OnBoarding,
+  Results,
 };

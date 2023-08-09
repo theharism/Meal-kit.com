@@ -12,6 +12,7 @@ import {
   OnBoarding,
   Login,
   Signup,
+  Results,
 } from "./src/screens";
 import { PaperProvider } from "react-native-paper";
 import { COLORS } from "./src/constants/COLORS";
@@ -57,6 +58,31 @@ const AuthStack = () => {
   );
 };
 
+const RecipesStack = () => {
+  const Stack1 = createStackNavigator();
+  return (
+    <Stack1.Navigator
+      initialRouteName="RecipesHome"
+      screenOptions={{
+        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        animationEnabled: true,
+        gestureEnabled: true,
+      }}
+    >
+      <Stack1.Screen
+        name="RecipesHome"
+        component={Recipes}
+        options={{ headerShown: false }}
+      />
+      <Stack1.Screen
+        name="Results"
+        component={Results}
+        options={{ headerShown: false }}
+      />
+    </Stack1.Navigator>
+  );
+};
+
 const BottomTabs = () => {
   const Tab = createBottomTabNavigator();
   const { width, height } = Dimensions.get("screen");
@@ -80,7 +106,7 @@ const BottomTabs = () => {
     >
       <Tab.Screen
         name="Recipes"
-        component={Recipes}
+        component={RecipesStack}
         options={{
           headerShown: false,
         }}

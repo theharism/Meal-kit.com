@@ -5,17 +5,70 @@ import {
   SafeAreaView,
   Dimensions,
   ScrollView,
+  ToastAndroid,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
 import { StatusBar } from "react-native";
 import { KeyboardAvoidingView } from "react-native";
 import { Text, TextInput } from "react-native-paper";
 import { COLORS } from "../constants/COLORS";
+import { useSelector } from "react-redux";
 
-const Recipes = () => {
+const Recipes = ({ navigation }) => {
   const [meal, setMeal] = useState("");
   const [people, setPeople] = useState("");
   const [budget, setBudget] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const token = useSelector((state) => state.Auth.token);
+
+  const apiUrl = "https://api.makeyourownmealkit.com/v1/recipes/first.php";
+
+  const goButtonPress = () => {
+    setLoading(true);
+
+    const queryParams = new URLSearchParams();
+    queryParams.append("token", token);
+    queryParams.append("budget", parseInt(budget));
+    queryParams.append("mealcop", parseInt(meal));
+    queryParams.append("save", true);
+
+    const urlWithQuery = apiUrl + "?" + queryParams.toString();
+
+    fetch(urlWithQuery, {
+      method: "GET",
+    })
+      .then(async function (response) {
+        const body = await response.json();
+
+        if (response.status != 200) {
+          switch (body.error.code) {
+            case 400:
+              ToastAndroid.show(body.error.message, ToastAndroid.LONG);
+              break;
+
+            case 401:
+              ToastAndroid.show(body.error.message, ToastAndroid.LONG);
+              break;
+
+            default:
+              ToastAndroid.show(body.error.message, ToastAndroid.SHORT);
+              break;
+          }
+        } else {
+          navigation.navigate("Results", { body });
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        ToastAndroid.show("Request Failed", ToastAndroid.SHORT);
+        // Handle other errors here
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -32,6 +85,7 @@ const Recipes = () => {
             <TextInput
               label="Number of meals"
               value={meal}
+              keyboardType="number-pad"
               mode="outlined"
               outlineStyle={styles.outline}
               outlineColor={COLORS.secondaryBackground}
@@ -50,6 +104,7 @@ const Recipes = () => {
               label="Number of People"
               value={people}
               mode="outlined"
+              keyboardType="number-pad"
               outlineStyle={styles.outline}
               outlineColor={COLORS.secondaryBackground}
               activeOutlineColor={COLORS.secondaryBackground}
@@ -67,6 +122,7 @@ const Recipes = () => {
               label="Enter your budget"
               value={budget}
               mode="outlined"
+              keyboardType="number-pad"
               outlineStyle={styles.outline}
               outlineColor={COLORS.secondaryBackground}
               activeOutlineColor={COLORS.secondaryBackground}
@@ -81,8 +137,12 @@ const Recipes = () => {
               textColor={COLORS.secondaryBackground}
             />
           </View>
-          <TouchableOpacity style={styles.button}>
-            <Text style={styles.buttonText}>GO</Text>
+          <TouchableOpacity style={styles.button} onPress={goButtonPress}>
+            {loading ? (
+              <ActivityIndicator size={24} color={COLORS.secondaryBackground} />
+            ) : (
+              <Text style={styles.buttonText}>GO</Text>
+            )}
           </TouchableOpacity>
         </ScrollView>
       </KeyboardAvoidingView>

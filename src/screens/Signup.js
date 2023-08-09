@@ -48,7 +48,7 @@ const Signup = ({ navigation }) => {
     })
       .then(async function (response) {
         const body = await response.json();
-        if (!body.status) {
+        if (response.status != 200) {
           switch (body.error.code) {
             case 400:
               ToastAndroid.show(body.error.message, ToastAndroid.LONG);
