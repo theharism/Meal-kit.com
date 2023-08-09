@@ -38,6 +38,11 @@ const Recipes = () => {
               activeOutlineColor={COLORS.secondaryBackground}
               style={styles.input}
               theme={styles.theme}
+              contentStyle={{
+                fontFamily: "Jost-400",
+                height: 68,
+                fontSize: 24,
+              }}
               textColor={COLORS.secondaryBackground}
               onChangeText={(meal) => setMeal(meal)}
             />
@@ -52,6 +57,11 @@ const Recipes = () => {
               theme={styles.theme}
               textColor={COLORS.secondaryBackground}
               onChangeText={(people) => setPeople(people)}
+              contentStyle={{
+                fontFamily: "Jost-400",
+                height: 68,
+                fontSize: 24,
+              }}
             />
             <TextInput
               label="Enter your budget"
@@ -63,6 +73,11 @@ const Recipes = () => {
               style={styles.input}
               onChangeText={(budget) => setBudget(budget)}
               theme={styles.theme}
+              contentStyle={{
+                fontFamily: "Jost-400",
+                height: 68,
+                fontSize: 24,
+              }}
               textColor={COLORS.secondaryBackground}
             />
           </View>
@@ -113,9 +128,8 @@ const styles = StyleSheet.create({
   },
   input: {
     backgroundColor: COLORS.primaryBackground,
-    height: 68,
+    height: 60,
     color: "#fff",
-    fontFamily: "Jost-400",
     fontSize: 24,
   },
   button: {

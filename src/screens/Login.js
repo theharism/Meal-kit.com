@@ -27,46 +27,55 @@ const Login = () => {
 
   const dispatch = useDispatch();
 
+  const apiUrl = "https://api.makeyourownmealkit.com/v1/account/login.php";
+
   const loginButtonPressed = () => {
     setLoading(true);
 
-    axios
-      .post("http://13.50.5.218/signup", {
-        user: email,
-        password,
-      })
-      .then(function (response) {
-        switch (response.status) {
-          case 200:
-            ToastAndroid.show("User Created", ToastAndroid.SHORT);
-            const token = response.data.session.token;
-            dispatch(setToken(token));
-            //navigation.navigate("Home");
-            break;
+    const data = new URLSearchParams();
+    data.append("user", email);
+    data.append("password", password);
 
-          case 400:
-            ToastAndroid.show("Invalid username or email", ToastAndroid.SHORT);
-            break;
+    const headers = {
+      "Content-Type": "application/x-www-form-urlencoded",
+    };
 
-          case 404:
-            ToastAndroid.show("User not found", ToastAndroid.SHORT);
-            break;
+    fetch(apiUrl, {
+      method: "POST",
+      headers: headers,
+      body: data.toString(),
+    })
+      .then(async function (response) {
+        const body = await response.json();
+        if (!body.status) {
+          switch (body.error.code) {
+            case 400:
+              ToastAndroid.show(body.error.message, ToastAndroid.LONG);
+              break;
 
-          case 401:
-            ToastAndroid.show("Invalid Password", ToastAndroid.SHORT);
-            break;
+            case 404:
+              ToastAndroid.show(body.error.message, ToastAndroid.LONG);
+              break;
 
-          default:
-            ToastAndroid.show("An error occurred", ToastAndroid.SHORT);
-            break;
+            case 401:
+              ToastAndroid.show(body.error.message, ToastAndroid.LONG);
+              break;
+
+            default:
+              ToastAndroid.show(body.error.message, ToastAndroid.SHORT);
+              break;
+          }
+        } else {
+          const token = body.session.token;
+          dispatch(setToken({ token }));
         }
       })
-      .catch(function (error) {
-        ToastAndroid.show("Error 404", ToastAndroid.SHORT);
+      .catch((error) => {
         console.log(error);
-        dispatch(setToken({ token: "token" }));
+        ToastAndroid.show("Request Failed", ToastAndroid.SHORT);
+        // Handle other errors here
       })
-      .finally(function () {
+      .finally(() => {
         setLoading(false);
       });
   };

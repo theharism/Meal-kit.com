@@ -166,6 +166,8 @@ function StartUp() {
   return (
     <PaperProvider>
       {token == null ? <AuthStack /> : <BottomTabs />}
+      {/* <Rating /> */}
+      {/* <ReConfirm /> */}
     </PaperProvider>
   );
 }

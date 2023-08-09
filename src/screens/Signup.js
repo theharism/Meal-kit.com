@@ -26,49 +26,57 @@ const Signup = ({ navigation }) => {
   const [checked, setChecked] = useState(true);
   const [loading, setLoading] = useState(false);
 
-  const url = "api.makeyourownmealkit.com";
+  const apiUrl = "https://api.makeyourownmealkit.com/v1/account/signup.php";
 
   const signupButtonPress = async () => {
     setLoading(true);
 
-    axios
-      .post("http://13.50.5.218/signup", {
-        username,
-        name,
-        email,
-        password,
-      })
-      .then(function (response) {
-        switch (response.status) {
-          case 200:
-            ToastAndroid.show("User Created", ToastAndroid.SHORT);
-            //navigation.navigate("Home");
-            break;
+    const data = new URLSearchParams();
+    data.append("username", username);
+    data.append("email", email);
+    data.append("name", name);
+    data.append("password", password);
 
-          case 400:
-            ToastAndroid.show("Invalid username or email", ToastAndroid.SHORT);
-            break;
+    const headers = {
+      "Content-Type": "application/x-www-form-urlencoded",
+    };
 
-          case 409:
-            ToastAndroid.show(
-              "Username or email not available",
-              ToastAndroid.SHORT
-            );
-            break;
+    fetch(apiUrl, {
+      method: "POST",
+      headers: headers,
+      body: data.toString(),
+    })
+      .then(async function (response) {
+        const body = await response.json();
+        if (!body.status) {
+          switch (body.error.code) {
+            case 400:
+              ToastAndroid.show(body.error.message, ToastAndroid.LONG);
+              break;
 
-          case 500:
-            ToastAndroid.show("Internal Server Error", ToastAndroid.SHORT);
-            break;
+            case 409:
+              ToastAndroid.show(body.error.message, ToastAndroid.LONG);
+              break;
 
-          default:
-            break;
+            case 500:
+              ToastAndroid.show(body.error.message, ToastAndroid.LONG);
+              break;
+
+            default:
+              ToastAndroid.show("An error occurred", ToastAndroid.SHORT);
+              break;
+          }
+        } else {
+          ToastAndroid.show(body.message, ToastAndroid.SHORT);
+          navigation.goBack();
         }
       })
-      .catch(function (error) {
-        ToastAndroid.show("Error 404", ToastAndroid.SHORT);
+      .catch((error) => {
         console.log(error);
+        ToastAndroid.show("Request Failed", ToastAndroid.LONG);
+        // Handle other errors here
       })
-      .finally(function () {
+      .finally(() => {
         setLoading(false);
       });
   };
