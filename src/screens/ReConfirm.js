@@ -15,7 +15,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { GroceriesItem } from "../components";
 import { Dimensions } from "react-native";
 
-const Groceries = () => {
+const ReConfirm = () => {
   const dispatch = useDispatch();
   const { width, height } = Dimensions.get("screen");
 
@@ -32,31 +32,16 @@ const Groceries = () => {
         backgroundColor={COLORS.primaryBackground}
       />
 
-      <View style={{ padding: 10, marginLeft: 5 }}>
-        <TouchableOpacity
+      <View style={{ padding: 10, margin: 5 }}>
+        <Text
           style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-            height: 32,
+            color: "#393939",
+            fontSize: 20,
+            fontFamily: "Jost-500",
           }}
-          onPress={() => addItem}
         >
-          <Text
-            style={{
-              color: COLORS.secondaryText,
-              fontSize: 16,
-              fontFamily: "Jost-500",
-            }}
-          >
-            Add item
-          </Text>
-          <AntDesign
-            name="pluscircle"
-            size={20}
-            color={COLORS.primaryBackground}
-          />
-        </TouchableOpacity>
+          DO YOU STILL HAVE THESE FROM LAST TIME?
+        </Text>
       </View>
 
       <Divider horizontalInset />
@@ -67,39 +52,59 @@ const Groceries = () => {
             title={item.title}
             subTitle={item.subTitle}
             id={item.id}
-            price={item.price}
           />
         )}
         showsVerticalScrollIndicator={false}
         keyExtractor={(item) => item.id}
       />
 
+      <View style={{ padding: 10, marginVertical: 5 }}>
+        <Text style={{ fontFamily: "Jost-700", fontSize: 12 }}>
+          We will use these ingredients in your next meal plan if you still have
+          them, so please check quantity, quality, and expiration dates.{"\n"}
+          {"\n"}
+          <Text style={{ fontFamily: "Jost-700", fontSize: 12 }}>
+            Caution:{" "}
+          </Text>
+          <Text style={{ fontFamily: "Jost-400-I", fontSize: 12 }}>
+            Make sure these items have been stored per producer's recommendation
+            and are still safe to eat. If in doubt, don’t eat them.
+          </Text>
+        </Text>
+      </View>
+
       <TouchableOpacity
         style={{
-          margin: 10,
-          borderRadius: 4,
-          height: height * 0.085,
+          marginVertical: 15,
+          marginHorizontal: 21,
+          borderRadius: 5,
+          height: 60,
           backgroundColor: COLORS.primaryBackground,
           justifyContent: "center",
           alignItems: "center",
+          shadowColor: "#000000", // Shadow color
+          shadowOffset: { width: 0, height: 2 }, // Shadow offset
+          shadowOpacity: 0.4, // Shadow opacity
+          shadowRadius: 10, // Shadow radius
+          elevation: 5, // Elevation for Android
         }}
       >
         <Text
           style={{
-            fontFamily: "Jost-700",
-            fontSize: 24,
+            fontFamily: "Jost-600",
+            fontSize: 16,
             letterSpacing: 1,
             color: COLORS.primaryText,
           }}
         >
-          Mark As Purchased
+          Confirm
         </Text>
       </TouchableOpacity>
     </SafeAreaView>
   );
 };
 
-export default Groceries;
+export default ReConfirm;
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: COLORS.secondaryBackground },
