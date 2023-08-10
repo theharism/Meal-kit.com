@@ -10,6 +10,7 @@ import {
 import React from "react";
 import { COLORS } from "../constants/COLORS";
 import { MenuItem } from "../components";
+import { useSelector } from "react-redux";
 
 const DATA = [
   {
@@ -33,6 +34,8 @@ const DATA = [
 ];
 
 const Menu = () => {
+  const recipes = useSelector((state) => state.Menu.recipes);
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar
@@ -41,11 +44,12 @@ const Menu = () => {
       />
 
       <FlatList
-        data={DATA}
+        data={recipes}
         renderItem={({ item }) => (
           <MenuItem
             title={item.title}
-            cost={item.cost}
+            cost={item.price}
+            image={item.image}
             id={item.id}
             time={item.time}
           />

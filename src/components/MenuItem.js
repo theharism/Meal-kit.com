@@ -6,11 +6,11 @@ import { Fontisto } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 
-const MenuItem = ({ id, title, time, cost }) => {
+const MenuItem = ({ id, title, time, cost, image }) => {
   return (
     <ImageBackground
       source={{
-        uri: "https://media.istockphoto.com/id/1305833252/photo/seitan-soy-meat-raw-pieces-ready-to-cook-snack-healthy-meal-copy-space-food-background-rustic.webp?b=1&s=170667a&w=0&k=20&c=71_OCKv7tet6vVkGwa5rCrNcso7g1dBKDH9YoONw36Q=",
+        uri: image,
       }}
       style={{
         padding: 15,
@@ -61,7 +61,7 @@ const MenuItem = ({ id, title, time, cost }) => {
           <View
             style={{
               flexDirection: "row",
-              width: 115,
+              width: 130,
               justifyContent: "space-between",
               alignItems: "center",
             }}
@@ -86,8 +86,9 @@ const MenuItem = ({ id, title, time, cost }) => {
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               <View
                 style={{
-                  width: 11, // Adjust the size of the circle as needed
-                  height: 11, // Adjust the size of the circle as needed
+                  marginTop: 2,
+                  width: 11.5, // Adjust the size of the circle as needed
+                  height: 11.5, // Adjust the size of the circle as needed
                   borderRadius: 5.5, // Half of the width/height to create a circle
                   borderWidth: 1, // Border width
                   backgroundColor: COLORS.secondaryBackground, // Border color

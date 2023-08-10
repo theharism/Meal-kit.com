@@ -13,7 +13,8 @@ import { StatusBar } from "react-native";
 import { KeyboardAvoidingView } from "react-native";
 import { Text, TextInput } from "react-native-paper";
 import { COLORS } from "../constants/COLORS";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setMenu } from "../slices/MenuSlice";
 
 const Recipes = ({ navigation }) => {
   const [meal, setMeal] = useState("");
@@ -21,7 +22,9 @@ const Recipes = ({ navigation }) => {
   const [budget, setBudget] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const dispatch = useDispatch();
   const token = useSelector((state) => state.Auth.token);
+  console.log(token);
 
   const apiUrl = "https://api.makeyourownmealkit.com/v1/recipes/first.php";
 
@@ -57,7 +60,19 @@ const Recipes = ({ navigation }) => {
               break;
           }
         } else {
-          navigation.navigate("Results", { body });
+          const dispatchSetMenu = async () => {
+            return new Promise((resolve) => {
+              const recipes = body.recipes;
+              const total_price = body.total_price;
+              const bonus = body.bonus;
+              dispatch(setMenu({ recipes, total_price, bonus }));
+              resolve();
+            });
+          };
+          console.log(body);
+          dispatchSetMenu().then(() => {
+            navigation.navigate("Results", { token, budget, meal });
+          });
         }
       })
       .catch((error) => {
@@ -139,7 +154,7 @@ const Recipes = ({ navigation }) => {
           </View>
           <TouchableOpacity style={styles.button} onPress={goButtonPress}>
             {loading ? (
-              <ActivityIndicator size={24} color={COLORS.secondaryBackground} />
+              <ActivityIndicator size={24} color={COLORS.primaryBackground} />
             ) : (
               <Text style={styles.buttonText}>GO</Text>
             )}

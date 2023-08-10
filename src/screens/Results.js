@@ -1,28 +1,246 @@
-import { StyleSheet, Text, View } from "react-native";
-import React from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  StatusBar,
+  TouchableOpacity,
+  ActivityIndicator,
+  ToastAndroid,
+} from "react-native";
+import React, { useState } from "react";
 import { useRoute } from "@react-navigation/native";
 import { SafeAreaView } from "react-native";
 import { COLORS } from "../constants/COLORS";
 import { Dimensions } from "react-native";
+import { FlatList } from "react-native";
+import ResultItem from "../components/ResultItem";
+import { useDispatch, useSelector } from "react-redux";
+import { clearSelectedItems, setMenu, setPurchase } from "../slices/MenuSlice";
 
 const Results = () => {
-  const route = useRoute();
   const { width, height } = Dimensions.get("screen");
-  const response = route.params?.body;
+  const [loading, setLoading] = useState(false);
+
+  const recipes = useSelector((state) => state.Menu.recipes);
+  const total_price = useSelector((state) => state.Menu.total_price);
+  const bonus = useSelector((state) => state.Menu.bonus);
+  const selectedItems = useSelector((state) => state.Menu.selectedItems);
+
+  const route = useRoute();
+  const token = route.params?.token;
+  const budget = route.params?.budget;
+  const meal = route.params?.meal;
+
+  const dispatch = useDispatch();
+
+  const apiUrl =
+    "https://api.makeyourownmealkit.com/v1/recipes/recalculate.php";
+
+  const dispatchSetPurchase = async (status) => {
+    return new Promise((resolve) => {
+      dispatch(setPurchase({ status }));
+      resolve();
+    });
+  };
+
+  const recalculateRecipes = () => {
+    //dispatch(clearSelectedItems);
+    setLoading(true);
+
+    dispatchSetPurchase(false).then(() => {
+      ToastAndroid.show("Plan Purchased", ToastAndroid.SHORT);
+    });
+
+    const queryParams = new URLSearchParams();
+    queryParams.append("token", token);
+    queryParams.append("budget", parseInt(budget));
+    queryParams.append("mealcop", parseInt(meal));
+    queryParams.append("recipes", selectedItems);
+    //queryParams.append("use_inventory", true);
+    queryParams.append("save", true);
+
+    const urlWithQuery = apiUrl + "?" + queryParams.toString();
+
+    fetch(urlWithQuery, {
+      method: "GET",
+    })
+      .then(async function (response) {
+        const body = await response.json();
+
+        if (response.status != 200) {
+          switch (body.error.code) {
+            case 400:
+              ToastAndroid.show(body.error.message, ToastAndroid.LONG);
+              break;
+
+            case 401:
+              ToastAndroid.show(body.error.message, ToastAndroid.LONG);
+              break;
+
+            default:
+              ToastAndroid.show(body.error.message, ToastAndroid.SHORT);
+              break;
+          }
+        } else {
+          const dispatchSetMenu = async () => {
+            return new Promise((resolve) => {
+              const recipes = body.recipes;
+              const total_price = body.total_price;
+              const bonus = body.bonus;
+              dispatch(setMenu({ recipes, total_price, bonus }));
+              resolve();
+            });
+          };
+
+          dispatchSetMenu();
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        ToastAndroid.show("Request Failed", ToastAndroid.SHORT);
+        // Handle other errors here
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
+  const buyThisPlan = () => {
+    dispatchSetPurchase(true).then(() => {
+      ToastAndroid.show("Plan Purchased", ToastAndroid.SHORT);
+    });
+  };
+
+  const footerComponent = (
+    <View
+      style={{
+        justifyContent: "flex-start",
+        marginHorizontal: 10,
+      }}
+    >
+      <TouchableOpacity
+        style={{
+          margin: 5,
+          borderRadius: 4,
+          height: 68,
+          backgroundColor: COLORS.primaryBackground,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+        onPress={recalculateRecipes}
+      >
+        {loading ? (
+          <ActivityIndicator size={24} color={COLORS.secondaryBackground} />
+        ) : (
+          <Text
+            style={{
+              fontFamily: "Jost-700",
+              fontSize: 22,
+              letterSpacing: 1,
+              color: COLORS.primaryText,
+            }}
+          >
+            Replace Selected
+          </Text>
+        )}
+      </TouchableOpacity>
+
+      <Text
+        style={{
+          fontFamily: "Jost-700",
+          fontSize: 14,
+          color: COLORS.black,
+          alignSelf: "center",
+        }}
+      >
+        OR
+      </Text>
+
+      <TouchableOpacity
+        style={{
+          margin: 5,
+          borderRadius: 4,
+          height: 68,
+          backgroundColor: COLORS.primaryBackground,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+        onPress={buyThisPlan}
+      >
+        {loading ? (
+          <ActivityIndicator size={24} color={COLORS.secondaryBackground} />
+        ) : (
+          <Text
+            style={{
+              fontFamily: "Jost-700",
+              fontSize: 22,
+              letterSpacing: 1,
+              color: "#393939",
+            }}
+          >
+            BUY THIS PLAN ${total_price.toFixed(2)}
+          </Text>
+        )}
+      </TouchableOpacity>
+      <Text
+        style={{
+          margin: 5,
+          fontFamily: "Jost-400",
+          fontSize: 16,
+          color: COLORS.black,
+        }}
+      >
+        <Text
+          style={{
+            fontFamily: "Jost-600",
+            fontSize: 16,
+            color: COLORS.black,
+          }}
+        >
+          Includes:
+        </Text>{" "}
+        {"\n"}
+        Recipes Saved 2 Menu {"\n"}Grocery List {"\n"}+Bonus ingredients saved
+        for next time.
+      </Text>
+      <Text
+        style={{
+          margin: 5,
+          fontFamily: "Jost-400",
+          fontSize: 12,
+          color: COLORS.black,
+        }}
+      >
+        <Text
+          style={{
+            fontFamily: "Jost-600",
+            fontSize: 12,
+            color: COLORS.black,
+          }}
+        >
+          Disclaimer:
+        </Text>{" "}
+        Grocery cost is based on average US National grocery cost, actual
+        pricing will vary based on location and final product selection.
+      </Text>
+    </View>
+  );
 
   return (
     <SafeAreaView
       style={{
         flex: 1,
-        alignItems: "center",
         backgroundColor: COLORS.secondaryBackground,
       }}
     >
+      <StatusBar
+        translucent={true}
+        backgroundColor={COLORS.primaryBackground}
+      />
       <View
         style={{
-          flex: 0.35,
+          flex: 0.21,
           justifyContent: "flex-end",
-          width,
           backgroundColor: COLORS.primaryBackground,
         }}
       >
@@ -32,8 +250,7 @@ const Results = () => {
             fontSize: 22,
             color: COLORS.primaryText,
             marginHorizontal: 10,
-            marginVertical: 10,
-            // marginTop: 100,
+            marginVertical: 5,
           }}
         >
           Result:
@@ -41,8 +258,7 @@ const Results = () => {
         <View
           style={{
             marginHorizontal: 10,
-            marginTop: 10,
-            marginBottom: 5,
+            marginVertical: 5,
             alignItems: "center",
             flexDirection: "row",
           }}
@@ -52,7 +268,6 @@ const Results = () => {
               fontFamily: "Jost-400",
               fontSize: 16,
               color: COLORS.primaryText,
-              //marginTop: 100,
             }}
           >
             Grocery Cost:{" "}
@@ -62,19 +277,18 @@ const Results = () => {
               fontFamily: "Jost-700",
               fontSize: 16,
               color: COLORS.primaryText,
-              //marginTop: 100,
             }}
           >
-            ${response.total_price}
+            ${total_price.toFixed(2)}
           </Text>
         </View>
         <View
           style={{
             marginHorizontal: 10,
             alignItems: "center",
-            flexDirection: "row",
-            marginBottom: 30,
             marginTop: 5,
+            marginBottom: 10,
+            flexDirection: "row",
           }}
         >
           <Text
@@ -82,7 +296,6 @@ const Results = () => {
               fontFamily: "Jost-400",
               fontSize: 16,
               color: COLORS.primaryText,
-              //marginTop: 100,
             }}
           >
             Bonus Ingredients:{" "}
@@ -92,13 +305,37 @@ const Results = () => {
               fontFamily: "Jost-700",
               fontSize: 16,
               color: COLORS.primaryText,
-              //marginTop: 100,
             }}
           >
-            $XX
+            ${bonus.toFixed(2)}
           </Text>
         </View>
       </View>
+
+      <View style={{ flex: 0.8 }}>
+        <FlatList
+          data={[...recipes, { id: "footer" }]} // Add a dummy footer item
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => {
+            if (item.id === "footer") {
+              return footerComponent;
+            } else {
+              return (
+                <ResultItem
+                  id={item.id}
+                  image={item.image}
+                  title={item.title}
+                  price={item.price}
+                  time={item.time}
+                />
+              );
+            }
+          }}
+          showsVerticalScrollIndicator={false}
+        />
+      </View>
+
+      {/* footer */}
     </SafeAreaView>
   );
 };

@@ -26,6 +26,7 @@ import {
   createStackNavigator,
 } from "@react-navigation/stack";
 import AuthSlice from "./src/slices/AuthSlice";
+import MenuSlice from "./src/slices/MenuSlice";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -33,6 +34,7 @@ const store = configureStore({
   reducer: {
     Groceries: GroceriesSlice,
     Auth: AuthSlice,
+    Menu: MenuSlice,
   },
 });
 
