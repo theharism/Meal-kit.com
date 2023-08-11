@@ -71,6 +71,7 @@ const CustomBottomSheet = ({ assetBottomSheet }) => {
           label="Item Quantity"
           value={quantity}
           mode="outlined"
+          keyboardType="number-pad"
           outlineStyle={styles.outline}
           outlineColor={COLORS.secondaryBackground}
           activeOutlineColor={COLORS.secondaryBackground}
