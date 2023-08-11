@@ -4,6 +4,7 @@ import { StyleSheet, Text, View, Dimensions } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { Ionicons, FontAwesome } from "@expo/vector-icons";
 import {
   Recipes,
   Menu,
@@ -114,6 +115,9 @@ const BottomTabs = () => {
         component={RecipesStack}
         options={{
           headerShown: false,
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="md-restaurant" color={color} size={size} />
+          ),
         }}
       />
       <Tab.Screen
@@ -131,6 +135,9 @@ const BottomTabs = () => {
             justifyContent: "flex-end",
             marginBottom: 10,
           },
+          tabBarIcon: ({ color, size }) => (
+            <FontAwesome name="list" color={color} size={size} />
+          ),
         }}
       />
       <Tab.Screen
@@ -153,6 +160,9 @@ const BottomTabs = () => {
             justifyContent: "flex-end",
             marginBottom: 15,
           },
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="ios-cart" color={color} size={size} />
+          ),
         }}
       />
     </Tab.Navigator>
