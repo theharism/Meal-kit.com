@@ -17,7 +17,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { CustomBottomSheet, GroceriesItem } from "../components";
 import { Dimensions } from "react-native";
 import { resetToken } from "../slices/AuthSlice";
-import { setItems } from "../slices/GroceriesSlice";
+import { deleteIngredients, setItems } from "../slices/GroceriesSlice";
 import { useFocusEffect } from "@react-navigation/native"; // Import the useFocusEffect hook
 
 const apiUrl = "https://api.makeyourownmealkit.com/v1/inventory/get.php";
@@ -25,9 +25,11 @@ const apiUrl = "https://api.makeyourownmealkit.com/v1/inventory/get.php";
 const Groceries = () => {
   const dispatch = useDispatch();
   const { width, height } = Dimensions.get("screen");
-  const [ingredients, setIngredients] = useState([]);
-  const [loading, setLoading] = useState(true);
+  //const [ingredients, setIngredients] = useState([]);
+  const [loading, setLoading] = useState(false);
   const token = useSelector((state) => state.Auth.token);
+  const ingredients = useSelector((state) => state.Groceries.ingredients);
+  const selectedItems = useSelector((state) => state.Groceries.selectedItems);
 
   function getuserInventory(token) {
     return new Promise((resolve, reject) => {
@@ -72,27 +74,29 @@ const Groceries = () => {
     });
   }
 
+  const deleteIngredientsFunc = () => {
+    dispatch(deleteIngredients());
+  };
+
   const openSheet = () => {
-    assetBottomSheet.current?.snapToIndex(0);
+    assetBottomSheet.current?.snapToIndex(1);
   };
 
   const assetBottomSheet = useRef(null);
 
-  useFocusEffect(
-    React.useCallback(() => {
-      getuserInventory(token)
-        .then((ingredient) => {
-          setIngredients(ingredient);
-          setLoading(false);
-          dispatch(setItems({ items: ingredient }));
-        })
-        .catch((error) => {
-          console.error("Error fetching ingredients:", error);
-        });
-    }, [])
-  );
-
-  //const GroceriesItems = useSelector((state) => state.Groceries);
+  // useFocusEffect(
+  //   React.useCallback(() => {
+  //     getuserInventory(token)
+  //       .then((ingredient) => {
+  //         setIngredients(ingredient);
+  //         setLoading(false);
+  //         dispatch(setItems({ items: ingredient }));
+  //       })
+  //       .catch((error) => {
+  //         console.error("Error fetching ingredients:", error);
+  //       });
+  //   }, [])
+  // );
 
   return (
     <SafeAreaView style={styles.container}>
@@ -167,17 +171,16 @@ const Groceries = () => {
 
       <TouchableOpacity
         style={{
-          //margin: 10,
+          marginBottom: 10,
           borderRadius: 4,
-          height: height * 0.085,
+          height: 68,
           backgroundColor: COLORS.primaryBackground,
           justifyContent: "center",
           alignItems: "center",
-          position: "absolute",
-          bottom: 10,
           width: width * 0.95,
           alignSelf: "center",
         }}
+        onPress={deleteIngredientsFunc}
       >
         <Text
           style={{

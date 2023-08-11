@@ -23,21 +23,31 @@ const OnBoarding = ({ navigation }) => {
       style={{
         flex: 1,
         backgroundColor: COLORS.secondaryBackground,
-        //justifyContent: "center",
-        alignItems: "center",
       }}
     >
       <StatusBar translucent backgroundColor={COLORS.primaryBackground} />
-      <Text
+      <View
         style={{
-          fontFamily: "Jost-700",
-          fontSize: 18,
-          color: COLORS.secondaryText,
+          justifyContent: "center",
+          alignItems: "center",
+          flex: 0.7,
         }}
       >
-        MakeYourOwnMealKit.com
-      </Text>
-      <Text
+        <Image
+          source={require("../../assets/icon.png")}
+          style={{ width: 86, height: 86, aspectRatio: 1 }}
+        />
+        <Text
+          style={{
+            fontFamily: "Jost-700",
+            fontSize: 18,
+            color: COLORS.secondaryText,
+            marginTop: 20,
+          }}
+        >
+          MakeYourOwnMealKit.com
+        </Text>
+        {/* <Text
         style={{
           fontFamily: "Jost-500",
           fontSize: 14,
@@ -85,51 +95,58 @@ const OnBoarding = ({ navigation }) => {
             style={{ width: 38, height: 38 }}
           />
         </TouchableOpacity>
-      </View>
+      </View> */}
 
-      <TouchableOpacity
+        <TouchableOpacity
+          style={{
+            margin: 10,
+            marginTop: 30,
+            borderRadius: 5,
+            height: 60,
+            width: width * 0.93,
+            backgroundColor: COLORS.primaryBackground,
+            justifyContent: "center",
+            alignItems: "center",
+            shadowColor: "#000000", // Shadow color
+            shadowOffset: { width: 0, height: 2 }, // Shadow offset
+            shadowOpacity: 0.4, // Shadow opacity
+            shadowRadius: 10, // Shadow radius
+            elevation: 5, // Elevation for Android
+          }}
+          onPress={() => navigation.navigate("Login")}
+        >
+          <Text
+            style={{
+              fontFamily: "Jost-600",
+              fontSize: 16,
+              letterSpacing: 1,
+              color: COLORS.primaryText,
+            }}
+          >
+            Login
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate("Signup")}>
+          <Text
+            style={{
+              fontFamily: "Jost-600",
+              fontSize: 16,
+              letterSpacing: 1,
+              color: COLORS.black,
+              marginTop: 5,
+            }}
+          >
+            Sign up
+          </Text>
+        </TouchableOpacity>
+      </View>
+      <View
         style={{
-          margin: 10,
-          marginTop: 30,
-          borderRadius: 5,
-          height: 60,
-          width: width * 0.93,
-          backgroundColor: COLORS.primaryBackground,
-          justifyContent: "center",
-          alignItems: "center",
-          shadowColor: "#000000", // Shadow color
-          shadowOffset: { width: 0, height: 2 }, // Shadow offset
-          shadowOpacity: 0.4, // Shadow opacity
-          shadowRadius: 10, // Shadow radius
-          elevation: 5, // Elevation for Android
+          position: "absolute",
+          bottom: 60,
+          alignSelf: "center",
         }}
-        onPress={() => navigation.navigate("Login")}
       >
-        <Text
-          style={{
-            fontFamily: "Jost-600",
-            fontSize: 16,
-            letterSpacing: 1,
-            color: COLORS.primaryText,
-          }}
-        >
-          Login
-        </Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.navigate("Signup")}>
-        <Text
-          style={{
-            fontFamily: "Jost-600",
-            fontSize: 16,
-            letterSpacing: 1,
-            color: COLORS.black,
-            marginTop: 5,
-          }}
-        >
-          Sign up
-        </Text>
-      </TouchableOpacity>
-      <View style={{ position: "absolute", bottom: 60 }}>
         <Text
           style={{
             fontFamily: "Jost-400",

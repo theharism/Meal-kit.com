@@ -7,13 +7,15 @@ import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 import { COLORS } from "../constants/COLORS";
 import { useDispatch } from "react-redux";
+import { ToastAndroid } from "react-native";
+import { addItem } from "../slices/GroceriesSlice";
 
 const CustomBottomSheet = ({ assetBottomSheet }) => {
-  const snapPoints = useMemo(() => ["40%"], []);
+  const snapPoints = useMemo(() => ["40%", "80%"], []);
   const navigation = useNavigation();
 
   const [title, setTitle] = useState("");
-  const [price, setPrice] = useState(0);
+  const [price, setPrice] = useState("");
   const [quantity, setQuantity] = useState("");
 
   const dispatch = useDispatch();
@@ -95,8 +97,15 @@ const CustomBottomSheet = ({ assetBottomSheet }) => {
           textColor={COLORS.secondaryText}
           labelStyle={{ fontSize: 17, fontFamily: "Jost-400" }}
           onPress={() => {
-            dispatch(addItem({ title, price, quantity }));
-            assetBottomSheet.current.close();
+            if (
+              title.length > 2 &&
+              parseFloat(price) > 0 &&
+              parseFloat(quantity) > 0
+            ) {
+              dispatch(addItem({ name: title, price, grams: quantity }));
+              assetBottomSheet.current.close();
+            } else
+              ToastAndroid.show("Enter Correct Values", ToastAndroid.SHORT);
           }}
         >
           Add Item

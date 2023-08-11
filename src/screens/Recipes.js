@@ -16,26 +16,37 @@ import { COLORS } from "../constants/COLORS";
 import { useDispatch, useSelector } from "react-redux";
 import { setMenu } from "../slices/MenuSlice";
 import { resetToken } from "../slices/AuthSlice";
+import { setUse_Inventory } from "../slices/GroceriesSlice";
 
 const Recipes = ({ navigation }) => {
   const [meal, setMeal] = useState("");
   const [people, setPeople] = useState("");
   const [budget, setBudget] = useState("");
   const [loading, setLoading] = useState(false);
+  const [use_inventory, setUseInventory] = useState(false);
 
   const dispatch = useDispatch();
   const token = useSelector((state) => state.Auth.token);
+  const ingredients = useSelector((state) => state.Groceries.ingredients);
+  const groceriesuseInventory = useSelector(
+    (state) => state.Groceries.use_inventory
+  );
 
   const apiUrl = "https://api.makeyourownmealkit.com/v1/recipes/first.php";
 
   const goButtonPress = () => {
+    if (people.length == 0 || budget.length == 0 || meal.length == 0) {
+      return;
+    }
+    dispatch(setUse_Inventory({ value: false }));
     setLoading(true);
 
     const queryParams = new URLSearchParams();
     queryParams.append("token", token);
     queryParams.append("budget", parseInt(budget));
     queryParams.append("mealcop", parseInt(meal));
-    queryParams.append("save", true);
+
+    queryParams.append("use_inventory", use_inventory);
 
     const urlWithQuery = apiUrl + "?" + queryParams.toString();
 
@@ -66,7 +77,9 @@ const Recipes = ({ navigation }) => {
               const recipes = body.recipes;
               const total_price = body.total_price;
               const bonus = body.bonus;
-              dispatch(setMenu({ recipes, total_price, bonus }));
+              const inventory = body.inventory;
+
+              dispatch(setMenu({ recipes, total_price, bonus, inventory }));
               resolve();
             });
           };
@@ -86,6 +99,15 @@ const Recipes = ({ navigation }) => {
       });
   };
 
+  const confirmCondition = () => {
+    if (ingredients.length > 0) {
+      navigation.navigate("ReConfirm");
+      setUseInventory(true);
+    } else goButtonPress();
+  };
+  if (groceriesuseInventory) {
+    goButtonPress();
+  }
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar
@@ -153,7 +175,7 @@ const Recipes = ({ navigation }) => {
               textColor={COLORS.secondaryBackground}
             />
           </View>
-          <TouchableOpacity style={styles.button} onPress={goButtonPress}>
+          <TouchableOpacity style={styles.button} onPress={confirmCondition}>
             {loading ? (
               <ActivityIndicator size={24} color={COLORS.primaryBackground} />
             ) : (

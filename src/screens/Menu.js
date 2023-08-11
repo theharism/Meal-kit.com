@@ -23,9 +23,10 @@ const apiUrl = "https://api.makeyourownmealkit.com/v1/account/recipes/get.php";
 
 const Menu = () => {
   const token = useSelector((state) => state.Auth.token);
+  const recipes = useSelector((state) => state.Menu.purchasedRecipes);
   const navigation = useNavigation();
-  const [recipes, setRecipes] = useState([]);
-  const [loading, setLoading] = useState(true);
+  //const [recipes, setRecipes] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -72,18 +73,18 @@ const Menu = () => {
     });
   }
 
-  useFocusEffect(
-    React.useCallback(() => {
-      getuserRecipes(token)
-        .then((recipes) => {
-          setRecipes(recipes);
-          setLoading(false);
-        })
-        .catch((error) => {
-          console.error("Error fetching recipes:", error);
-        });
-    }, [])
-  );
+  // useFocusEffect(
+  //   React.useCallback(() => {
+  //     getuserRecipes(token)
+  //       .then((recipes) => {
+  //         setRecipes(recipes);
+  //         setLoading(false);
+  //       })
+  //       .catch((error) => {
+  //         console.error("Error fetching recipes:", error);
+  //       });
+  //   }, [])
+  // );
 
   return (
     <SafeAreaView style={styles.container}>
@@ -115,11 +116,11 @@ const Menu = () => {
           data={recipes}
           renderItem={({ item }) => (
             <MenuItem
-              title={item.recipe.title}
-              cost={item.recipe.price}
-              image={item.recipe.image}
-              id={item.recipe.id}
-              time={item.recipe.cooking_time}
+              title={item.title}
+              cost={item.price}
+              image={item.image}
+              id={item.id}
+              time={item.time}
               navigation={navigation}
             />
           )}

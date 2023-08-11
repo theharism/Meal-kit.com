@@ -15,16 +15,24 @@ import { Dimensions } from "react-native";
 import { FlatList } from "react-native";
 import ResultItem from "../components/ResultItem";
 import { useDispatch, useSelector } from "react-redux";
-import { clearSelectedItems, setMenu, setPurchase } from "../slices/MenuSlice";
+import { appendIngredients } from "../slices/GroceriesSlice";
+import {
+  addPurchasedRecipe,
+  clearSelectedItems,
+  setMenu,
+  setPurchase,
+} from "../slices/MenuSlice";
 
 const Results = ({ navigation }) => {
   const { width, height } = Dimensions.get("screen");
-  const [loading, setLoading] = useState(false);
+  const [loading1, setLoading1] = useState(false);
+  const [loading2, setLoading2] = useState(false);
 
   const recipes = useSelector((state) => state.Menu.recipes);
   const total_price = useSelector((state) => state.Menu.total_price);
   const bonus = useSelector((state) => state.Menu.bonus);
   const selectedItems = useSelector((state) => state.Menu.selectedItems);
+  const inventory = useSelector((state) => state.Menu.inventory);
 
   const route = useRoute();
   const token = route.params?.token;
@@ -44,7 +52,7 @@ const Results = ({ navigation }) => {
   };
 
   const recalculateRecipes = (save) => {
-    setLoading(true);
+    setLoading1(true);
 
     const queryParams = new URLSearchParams();
     queryParams.append("token", token);
@@ -82,7 +90,9 @@ const Results = ({ navigation }) => {
               const recipes = body.recipes;
               const total_price = body.total_price;
               const bonus = body.bonus;
-              dispatch(setMenu({ recipes, total_price, bonus }));
+              const inventory = body.inventory;
+
+              dispatch(setMenu({ recipes, total_price, bonus, inventory }));
               resolve();
             });
           };
@@ -96,15 +106,21 @@ const Results = ({ navigation }) => {
         // Handle other errors here
       })
       .finally(() => {
-        setLoading(false);
+        setLoading1(false);
+        setLoading2(false);
       });
   };
 
   const buyThisPlan = () => {
+    setLoading2(true);
     recalculateRecipes(true);
+    dispatch(addPurchasedRecipe({ purchasedRecipes: recipes, save: true }));
+    dispatch(appendIngredients({ inventory, save: true }));
     dispatchSetPurchase(true).then(() => {
       ToastAndroid.show("Plan Purchased", ToastAndroid.SHORT);
     });
+    navigation.goBack();
+    navigation.navigate("Menu");
   };
 
   const footerComponent = (
@@ -125,7 +141,7 @@ const Results = ({ navigation }) => {
         }}
         onPress={() => recalculateRecipes(false)}
       >
-        {loading ? (
+        {loading1 ? (
           <ActivityIndicator size={24} color={COLORS.secondaryBackground} />
         ) : (
           <Text
@@ -163,7 +179,7 @@ const Results = ({ navigation }) => {
         }}
         onPress={buyThisPlan}
       >
-        {loading ? (
+        {loading2 ? (
           <ActivityIndicator size={24} color={COLORS.secondaryBackground} />
         ) : (
           <Text

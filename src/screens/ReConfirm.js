@@ -4,26 +4,84 @@ import {
   View,
   SafeAreaView,
   StatusBar,
+  ToastAndroid,
+  ActivityIndicator,
   TouchableOpacity,
 } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import { COLORS } from "../constants/COLORS";
 import { Divider } from "react-native-paper";
-import { AntDesign } from "@expo/vector-icons";
+
 import { FlatList } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { GroceriesItem } from "../components";
-import { Dimensions } from "react-native";
 
-const ReConfirm = () => {
+import { deleteIngredients, setUse_Inventory } from "../slices/GroceriesSlice";
+
+const ReConfirm = ({ navigation }) => {
+  const GroceriesItems = useSelector((state) => state.Groceries.ingredients);
+  const selectedItems = useSelector((state) => state.Groceries.selectedItems);
+  const token = useSelector((state) => state.Auth.token);
+  const [loading, setLoading] = useState(false);
+
   const dispatch = useDispatch();
-  const { width, height } = Dimensions.get("screen");
 
-  const addItem = () => {
-    dispatch(addItem({}));
+  const apiUrl = "https://api.makeyourownmealkit.com/v1/inventory/delete.php";
+
+  const deleteServerIngredients = () => {
+    setLoading(true);
+
+    function deleteUserInventoryIngredient(token, id) {
+      console.log(token, id);
+      return new Promise((resolve, reject) => {
+        const data = new URLSearchParams();
+        data.append("token", token);
+        data.append("ingredient", id);
+
+        const urlWithQuery = apiUrl + "?" + data.toString();
+
+        fetch(urlWithQuery, {
+          method: "GET",
+        })
+          .then(async function (response) {
+            const body = await response.json();
+
+            if (response.status !== 200) {
+              switch (body.error.code) {
+                case 400:
+                  ToastAndroid.show(body.error.message, ToastAndroid.LONG);
+                  reject(new Error(body.error.message));
+                  break;
+
+                case 401:
+                  dispatch(resetToken());
+                  ToastAndroid.show(body.error.message, ToastAndroid.LONG);
+                  reject(new Error(body.error.message));
+                  break;
+
+                default:
+                  ToastAndroid.show(body.error.message, ToastAndroid.SHORT);
+                  reject(new Error(body.error.message));
+                  break;
+              }
+            } else {
+              resolve();
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+            ToastAndroid.show("Request Failed", ToastAndroid.SHORT);
+            reject(error);
+          });
+      });
+    }
+
+    selectedItems.map((id) => deleteUserInventoryIngredient(token, id));
+    dispatch(deleteIngredients());
+    setLoading(false);
+    dispatch(setUse_Inventory({ value: true }));
+    navigation.goBack();
   };
-
-  const GroceriesItems = useSelector((state) => state.Groceries);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -49,13 +107,13 @@ const ReConfirm = () => {
         data={GroceriesItems}
         renderItem={({ item }) => (
           <GroceriesItem
-            title={item.title}
-            subTitle={item.subTitle}
-            id={item.id}
+            title={item.ingredient.name}
+            subTitle={item.ingredient.grams}
+            id={item.ingredient.id}
           />
         )}
         showsVerticalScrollIndicator={false}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item, index) => index.toString()}
       />
 
       <View style={{ padding: 10, marginVertical: 5 }}>
@@ -88,17 +146,26 @@ const ReConfirm = () => {
           shadowRadius: 10, // Shadow radius
           elevation: 5, // Elevation for Android
         }}
+        onPress={deleteServerIngredients}
       >
-        <Text
-          style={{
-            fontFamily: "Jost-600",
-            fontSize: 16,
-            letterSpacing: 1,
-            color: COLORS.primaryText,
-          }}
-        >
-          Confirm
-        </Text>
+        {loading ? (
+          <ActivityIndicator
+            color={COLORS.secondaryBackground}
+            size={30}
+            style={{ alignSelf: "center" }}
+          />
+        ) : (
+          <Text
+            style={{
+              fontFamily: "Jost-600",
+              fontSize: 16,
+              letterSpacing: 1,
+              color: COLORS.primaryText,
+            }}
+          >
+            Confirm
+          </Text>
+        )}
       </TouchableOpacity>
     </SafeAreaView>
   );

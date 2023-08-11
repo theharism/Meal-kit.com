@@ -217,7 +217,7 @@ const MenuItemDetail = ({ navigation }) => {
               alignSelf: "center",
             }}
           >
-            Loading...
+            Loading
           </Text>
         </View>
       ) : (
@@ -422,7 +422,7 @@ const MenuItemDetail = ({ navigation }) => {
               showsVerticalScrollIndicator={false}
             />
           ) : null}
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={{
               //margin: 10,
               borderRadius: 4,
@@ -444,7 +444,7 @@ const MenuItemDetail = ({ navigation }) => {
             >
               Mark As Purchased
             </Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </>
       )}
     </SafeAreaView>

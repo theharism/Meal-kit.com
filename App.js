@@ -1,6 +1,6 @@
 import "react-native-gesture-handler";
 import React, { useEffect } from "react";
-import { StyleSheet, Text, View, Dimensions } from "react-native";
+import { StyleSheet, Text, View, Dimensions, Image } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -22,13 +22,13 @@ import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { configureStore } from "@reduxjs/toolkit";
 import { Provider, useDispatch, useSelector } from "react-redux";
-import GroceriesSlice from "./src/slices/GroceriesSlice";
+import GroceriesSlice, { appendIngredients } from "./src/slices/GroceriesSlice";
 import {
   CardStyleInterpolators,
   createStackNavigator,
 } from "@react-navigation/stack";
 import AuthSlice, { setToken } from "./src/slices/AuthSlice";
-import MenuSlice from "./src/slices/MenuSlice";
+import MenuSlice, { addPurchasedRecipe } from "./src/slices/MenuSlice";
 import { useState } from "react";
 import { MenuItemDetail } from "./src/components";
 
@@ -81,6 +81,33 @@ const RecipesStack = () => {
         options={{ headerShown: false }}
       />
       <Stack1.Screen
+        name="ReConfirm"
+        component={ReConfirm}
+        options={{
+          headerTitle: "CONFIRM INVENTORY",
+          headerTitleAlign: "center",
+          headerTintColor: COLORS.secondaryBackground,
+          headerStyle: {
+            backgroundColor: COLORS.primaryBackground,
+            height: 125,
+          },
+          headerLeft: null,
+          headerTitleStyle: { fontSize: 24, fontFamily: "Jost-700" },
+          headerTitleContainerStyle: {
+            justifyContent: "flex-end",
+            marginBottom: 10,
+          },
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="md-restaurant" color={color} size={size} />
+          ),
+          tabBarLabelStyle: {
+            fontFamily: "Jost-500",
+            fontSize: 12,
+            color: "#393939",
+          },
+        }}
+      />
+      <Stack1.Screen
         name="Results"
         component={Results}
         options={{ headerShown: false }}
@@ -115,11 +142,24 @@ const BottomTabs = () => {
         component={RecipesStack}
         options={{
           headerShown: false,
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="md-restaurant" color={color} size={size} />
+          tabBarIcon: ({ focused }) => (
+            <Image
+              source={
+                focused
+                  ? require("./assets/images/black_dish.png")
+                  : require("./assets/images/gray_dish.png")
+              }
+              style={{ width: 30, height: 30 }}
+            />
           ),
+          tabBarLabelStyle: {
+            fontFamily: "Jost-500",
+            fontSize: 12,
+            color: "#393939",
+          },
         }}
       />
+
       <Tab.Screen
         name="Menu"
         component={Menu}
@@ -136,8 +176,13 @@ const BottomTabs = () => {
             marginBottom: 10,
           },
           tabBarIcon: ({ color, size }) => (
-            <FontAwesome name="list" color={color} size={size} />
+            <Ionicons name="md-restaurant" color={color} size={size} />
           ),
+          tabBarLabelStyle: {
+            fontFamily: "Jost-500",
+            fontSize: 12,
+            color: "#393939",
+          },
         }}
       />
       <Tab.Screen
@@ -163,6 +208,11 @@ const BottomTabs = () => {
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="ios-cart" color={color} size={size} />
           ),
+          tabBarLabelStyle: {
+            fontFamily: "Jost-500",
+            fontSize: 12,
+            color: "#393939",
+          },
         }}
       />
     </Tab.Navigator>
@@ -177,15 +227,33 @@ function StartUp() {
   const token = useSelector((state) => state.Auth.token);
 
   useEffect(() => {
-    async function getToken() {
+    async function getLocalData() {
       AsyncStorage.getItem("token").then((token) => {
         if (token) {
           setLocalToken(token);
           dispatch(setToken({ token }));
         }
       });
+      AsyncStorage.getItem("Menu").then((jsonValue) => {
+        const recipes = jsonValue != null ? JSON.parse(jsonValue) : null;
+
+        if (recipes != null) {
+          dispatch(
+            addPurchasedRecipe({ purchasedRecipes: recipes, save: false })
+          );
+        }
+      });
+      AsyncStorage.getItem("Groceries").then((jsonValue) => {
+        const groceries = jsonValue != null ? JSON.parse(jsonValue) : null;
+
+        if (groceries != null) {
+          dispatch(appendIngredients({ inventory: groceries, save: true }));
+        }
+      });
+      // await AsyncStorage.removeItem("Menu");
+      //await AsyncStorage.removeItem("Groceries");
     }
-    getToken();
+    getLocalData();
   }, []);
 
   let [fontsLoaded] = useFonts({
@@ -240,10 +308,22 @@ function StartUp() {
             component={MenuItemDetail}
             options={{ headerShown: false }}
           />
+          <Stack.Screen
+            name="Rating"
+            component={Rating}
+            options={{
+              headerTitle: "",
+
+              headerTintColor: COLORS.secondaryBackground,
+              headerStyle: {
+                backgroundColor: COLORS.primaryBackground,
+                height: 100,
+              },
+            }}
+          />
         </Stack.Navigator>
       )}
 
-      {/* <Rating /> */}
       {/* <ReConfirm /> */}
     </PaperProvider>
   );

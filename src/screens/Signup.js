@@ -23,7 +23,7 @@ const Signup = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [hide, setHide] = useState(true);
-  const [checked, setChecked] = useState(true);
+  const [checked, setChecked] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const apiUrl = "https://api.makeyourownmealkit.com/v1/account/signup.php";
@@ -294,7 +294,7 @@ const Signup = ({ navigation }) => {
                 shadowRadius: 10, // Shadow radius
                 elevation: 5, // Elevation for Android
               }}
-              onPress={signupButtonPress}
+              onPress={checked ? signupButtonPress : null}
             >
               {loading ? (
                 <ActivityIndicator

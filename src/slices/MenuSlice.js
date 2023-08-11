@@ -1,3 +1,4 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createSlice } from "@reduxjs/toolkit";
 
 export const MenuSlice = createSlice({
@@ -8,13 +9,49 @@ export const MenuSlice = createSlice({
     bonus: 0,
     selectedItems: "",
     purchase: false,
+    purchasedRecipes: [],
+    inventory: [],
   },
   reducers: {
-    addRecipe: (state, action) => {},
+    addPurchasedRecipe: (state, action) => {
+      const data = action.payload.purchasedRecipes;
+      const save = action.payload.purchasedRecipes;
+      if (data != null) {
+        state.purchasedRecipes = state.purchasedRecipes.concat(data);
+        async function write() {
+          const jsonValue = JSON.stringify(state.purchasedRecipes);
+          await AsyncStorage.setItem("Menu", jsonValue);
+        }
+        if (save) {
+          write().then(() => console.log("done Menu"));
+        }
+      }
+    },
+    completePurchasedRecipe: (state, action) => {
+      const recipeIdToRemove = action.payload.id;
+
+      // Filter out the recipe with the specified ID from the purchasedRecipes array
+      const updatedPurchasedRecipes = state.purchasedRecipes.filter(
+        (recipe) => recipe.id !== recipeIdToRemove
+      );
+
+      async function write() {
+        const jsonValue = JSON.stringify(updatedPurchasedRecipes);
+        await AsyncStorage.setItem("Menu", jsonValue);
+      }
+      write().then(() => console.log("done Menu"));
+
+      return {
+        ...state,
+        purchasedRecipes: updatedPurchasedRecipes,
+      };
+    },
+
     setMenu: (state, action) => {
       state.recipes = action.payload.recipes;
       state.total_price = action.payload.total_price;
       state.bonus = action.payload.bonus;
+      state.inventory = action.payload.inventory;
     },
     addSelectedItems: (state, action) => {
       const newItem = action.payload.id;
@@ -50,6 +87,8 @@ export const {
   removeSelectedItem,
   clearSelectedItems,
   setPurchase,
+  addPurchasedRecipe,
+  completePurchasedRecipe,
 } = MenuSlice.actions;
 
 export default MenuSlice.reducer;

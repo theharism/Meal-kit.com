@@ -12,11 +12,25 @@ import { LinearGradient } from "expo-linear-gradient";
 
 import { Button, Menu, Divider, PaperProvider } from "react-native-paper";
 import { Modal } from "react-native";
+import { useDispatch } from "react-redux";
+import { completePurchasedRecipe } from "../slices/MenuSlice";
 
 const MenuItem = ({ id, title, time, cost, image, navigation }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
+  const dispatch = useDispatch();
+
   const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  const removeRecipe = () => {
+    dispatch(completePurchasedRecipe({ id }));
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  const completeRecipe = () => {
+    navigation.navigate("Rating", { id });
     setIsDropdownOpen(!isDropdownOpen);
   };
 
@@ -130,33 +144,22 @@ const MenuItem = ({ id, title, time, cost, image, navigation }) => {
             </View>
 
             <TouchableOpacity onPress={toggleDropdown}>
-              <Entypo name="dots-three-vertical" size={16} color="white" />
+              <Entypo name="dots-three-vertical" size={18} color="white" />
             </TouchableOpacity>
             {isDropdownOpen && (
-              // <Modal
-              //   animationType="slide"
-              //   transparent={true}
-              //   visible={isDropdownOpen}
-              // >
-              //   <View style={styles.modalContainer}>
-              //     <View style={styles.dropdown} key={id}>
-              //       <TouchableOpacity style={styles.dropdownOption}>
-              //         <Text style={styles.optionText}>Option 1</Text>
-              //       </TouchableOpacity>
-              //       <TouchableOpacity style={styles.dropdownOption}>
-              //         <Text style={styles.optionText}>Option 2</Text>
-              //       </TouchableOpacity>
-              //       {/* Add more options as needed */}
-              //     </View>
-              //   </View>
-              // </Modal>
               <View style={[styles.dropdown, styles.upwardDropdown]}>
                 {/* Dropdown options */}
-                <TouchableOpacity style={styles.dropdownOption}>
+                <TouchableOpacity
+                  style={styles.dropdownOption}
+                  onPress={completeRecipe}
+                >
                   <Text style={styles.optionText}>Mark as prepared</Text>
                 </TouchableOpacity>
                 <Divider />
-                <TouchableOpacity style={styles.dropdownOption}>
+                <TouchableOpacity
+                  style={styles.dropdownOption}
+                  onPress={removeRecipe}
+                >
                   <Text style={styles.optionText}>Remove from menu</Text>
                 </TouchableOpacity>
               </View>

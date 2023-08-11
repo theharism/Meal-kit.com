@@ -12,13 +12,27 @@ import React, { useState } from "react";
 import { COLORS } from "../constants/COLORS";
 import { AirbnbRating } from "@rneui/themed";
 import { TextInput, Switch } from "react-native";
+import { useRoute } from "@react-navigation/native";
+import { ToastAndroid } from "react-native";
+import { useDispatch } from "react-redux";
+import { completePurchasedRecipe } from "../slices/MenuSlice";
 
-const Rating = () => {
+const Rating = ({ navigation }) => {
   const [comment, setComment] = useState("");
   const { width, height } = Dimensions.get("screen");
   const [isSwitchOn, setIsSwitchOn] = React.useState(false);
 
+  const dispatch = useDispatch();
+  const route = useRoute();
+  const id = route.params?.id;
+
   const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
+
+  const removeRecipe = () => {
+    dispatch(completePurchasedRecipe({ id }));
+    ToastAndroid.show("Recipe Completed", ToastAndroid.SHORT);
+    navigation.goBack();
+  };
 
   return (
     <SafeAreaView
@@ -26,7 +40,6 @@ const Rating = () => {
         flex: 1,
         backgroundColor: COLORS.secondaryBackground,
         justifyContent: "flex-start",
-        top: 60,
       }}
     >
       <StatusBar translucent backgroundColor={COLORS.primaryBackground} />
@@ -37,6 +50,7 @@ const Rating = () => {
           alignItems: "center",
           justifyContent: "space-between",
           marginHorizontal: 14,
+          marginTop: 20,
         }}
       >
         <Text style={{ fontFamily: "Jost-500", fontSize: 16 }}>
@@ -94,6 +108,7 @@ const Rating = () => {
           shadowRadius: 10, // Shadow radius
           elevation: 5, // Elevation for Android
         }}
+        onPress={removeRecipe}
       >
         <Text
           style={{

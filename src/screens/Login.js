@@ -188,7 +188,7 @@ const Login = () => {
                 )
               }
             />
-            <Text
+            {/* <Text
               style={{
                 fontFamily: "Jost-500",
                 fontSize: 14,
@@ -199,7 +199,7 @@ const Login = () => {
               }}
             >
               Forgot Password?
-            </Text>
+            </Text> */}
           </View>
 
           <TouchableOpacity
