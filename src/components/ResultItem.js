@@ -1,4 +1,10 @@
-import { StyleSheet, Text, View } from "react-native";
+import {
+  Pressable,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import { Dimensions, Image } from "react-native";
 import { Checkbox } from "react-native-paper";
@@ -35,7 +41,7 @@ const ResultItem = ({ id, image, title, time, price }) => {
         //alignItems: "flex-start",
       }}
     >
-      <View>
+      <Pressable onPress={handleCheckboxToggle}>
         <View style={{ position: "absolute", zIndex: 9 }}>
           <Checkbox
             status={checked ? "checked" : "unchecked"}
@@ -71,7 +77,7 @@ const ResultItem = ({ id, image, title, time, price }) => {
             borderRadius: 5, // Match the borderRadius of the image
           }}
         />
-      </View>
+      </Pressable>
       <Text
         style={{
           fontFamily: "Jost-400",

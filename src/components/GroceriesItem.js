@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Checkbox } from "react-native-paper";
 import { COLORS } from "../constants/COLORS";
 import {
@@ -14,14 +14,19 @@ const GroceriesItem = ({ id, title, subTitle, price }) => {
   const dispatch = useDispatch();
 
   const handleCheckboxToggle = () => {
+    const temp = !checked;
     setChecked(!checked); // Toggle the checkbox state
 
-    if (checked) {
-      dispatch(removeSelectedIngredients({ id }));
-    } else {
+    if (temp) {
       dispatch(addSelectedIngredients({ id }));
+    } else {
+      dispatch(removeSelectedIngredients({ id }));
     }
   };
+
+  useEffect(() => {
+    setChecked(false);
+  }, [id]);
 
   return (
     <View

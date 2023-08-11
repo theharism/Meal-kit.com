@@ -53,6 +53,7 @@ export const GroceriesSlice = createSlice({
       const newItem = action.payload.id;
 
       state.selectedItems.push(newItem); // Push the new item to the selectedItems array
+      console.log(state.selectedItems);
     },
     removeSelectedIngredients: (state, action) => {
       const itemToRemove = action.payload.id;
@@ -60,9 +61,6 @@ export const GroceriesSlice = createSlice({
       state.selectedItems = state.selectedItems.filter(
         (item) => item !== itemToRemove
       ); // Remove the item from the selectedItems array using filter
-    },
-    clearSelectedIngredients: (state) => {
-      state.selectedItems = []; // Clear the selectedItems array
     },
     deleteIngredients: (state, action) => {
       const selectedIds = state.selectedItems;

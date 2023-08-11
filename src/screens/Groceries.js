@@ -164,6 +164,7 @@ const Groceries = () => {
               price={item.ingredient.price}
             />
           )}
+          scrollEventThrottle={16}
           showsVerticalScrollIndicator={false}
           keyExtractor={(item, index) => index.toString()}
         />
