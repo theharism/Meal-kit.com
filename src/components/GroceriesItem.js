@@ -44,7 +44,7 @@ const GroceriesItem = ({ id, title, subTitle, price }) => {
               color: "rgba(0,0,0,0.4)",
             }}
           >
-            {subTitle}
+            {subTitle} gm
           </Text>
         </View>
       </View>

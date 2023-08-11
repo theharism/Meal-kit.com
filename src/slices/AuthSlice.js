@@ -1,3 +1,4 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createSlice } from "@reduxjs/toolkit";
 
 export const AuthSlice = createSlice({
@@ -11,6 +12,10 @@ export const AuthSlice = createSlice({
     },
     resetToken: (state, action) => {
       state.token = null;
+      async function write() {
+        await AsyncStorage.removeItem("token");
+      }
+      write().then(() => console.log("done"));
     },
   },
 });

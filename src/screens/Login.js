@@ -15,7 +15,7 @@ import { COLORS } from "../constants/COLORS";
 import { TextInput } from "react-native-paper";
 import { useDispatch } from "react-redux";
 import { setToken } from "../slices/AuthSlice";
-import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Login = () => {
   const { width, height } = Dimensions.get("screen");
@@ -68,6 +68,7 @@ const Login = () => {
         } else {
           const token = body.session.token;
           dispatch(setToken({ token }));
+          await AsyncStorage.setItem("token", token);
         }
       })
       .catch((error) => {

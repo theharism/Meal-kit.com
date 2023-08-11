@@ -15,6 +15,7 @@ import { Text, TextInput } from "react-native-paper";
 import { COLORS } from "../constants/COLORS";
 import { useDispatch, useSelector } from "react-redux";
 import { setMenu } from "../slices/MenuSlice";
+import { resetToken } from "../slices/AuthSlice";
 
 const Recipes = ({ navigation }) => {
   const [meal, setMeal] = useState("");
@@ -24,7 +25,6 @@ const Recipes = ({ navigation }) => {
 
   const dispatch = useDispatch();
   const token = useSelector((state) => state.Auth.token);
-  console.log(token);
 
   const apiUrl = "https://api.makeyourownmealkit.com/v1/recipes/first.php";
 
@@ -52,6 +52,7 @@ const Recipes = ({ navigation }) => {
               break;
 
             case 401:
+              dispatch(resetToken());
               ToastAndroid.show(body.error.message, ToastAndroid.LONG);
               break;
 
@@ -69,7 +70,7 @@ const Recipes = ({ navigation }) => {
               resolve();
             });
           };
-          console.log(body);
+
           dispatchSetMenu().then(() => {
             navigation.navigate("Results", { token, budget, meal });
           });

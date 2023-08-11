@@ -7,7 +7,7 @@ import {
   ActivityIndicator,
   ToastAndroid,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRoute } from "@react-navigation/native";
 import { SafeAreaView } from "react-native";
 import { COLORS } from "../constants/COLORS";
@@ -17,7 +17,7 @@ import ResultItem from "../components/ResultItem";
 import { useDispatch, useSelector } from "react-redux";
 import { clearSelectedItems, setMenu, setPurchase } from "../slices/MenuSlice";
 
-const Results = () => {
+const Results = ({ navigation }) => {
   const { width, height } = Dimensions.get("screen");
   const [loading, setLoading] = useState(false);
 
@@ -43,13 +43,8 @@ const Results = () => {
     });
   };
 
-  const recalculateRecipes = () => {
-    //dispatch(clearSelectedItems);
+  const recalculateRecipes = (save) => {
     setLoading(true);
-
-    dispatchSetPurchase(false).then(() => {
-      ToastAndroid.show("Plan Purchased", ToastAndroid.SHORT);
-    });
 
     const queryParams = new URLSearchParams();
     queryParams.append("token", token);
@@ -57,7 +52,7 @@ const Results = () => {
     queryParams.append("mealcop", parseInt(meal));
     queryParams.append("recipes", selectedItems);
     //queryParams.append("use_inventory", true);
-    queryParams.append("save", true);
+    queryParams.append("save", save);
 
     const urlWithQuery = apiUrl + "?" + queryParams.toString();
 
@@ -91,7 +86,7 @@ const Results = () => {
               resolve();
             });
           };
-
+          dispatch(clearSelectedItems);
           dispatchSetMenu();
         }
       })
@@ -106,6 +101,7 @@ const Results = () => {
   };
 
   const buyThisPlan = () => {
+    recalculateRecipes(true);
     dispatchSetPurchase(true).then(() => {
       ToastAndroid.show("Plan Purchased", ToastAndroid.SHORT);
     });
@@ -127,7 +123,7 @@ const Results = () => {
           justifyContent: "center",
           alignItems: "center",
         }}
-        onPress={recalculateRecipes}
+        onPress={() => recalculateRecipes(false)}
       >
         {loading ? (
           <ActivityIndicator size={24} color={COLORS.secondaryBackground} />

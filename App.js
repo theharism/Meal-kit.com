@@ -2,6 +2,7 @@ import "react-native-gesture-handler";
 import React, { useEffect } from "react";
 import { StyleSheet, Text, View, Dimensions } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import {
   Recipes,
@@ -19,14 +20,16 @@ import { COLORS } from "./src/constants/COLORS";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { configureStore } from "@reduxjs/toolkit";
-import { Provider, useSelector } from "react-redux";
+import { Provider, useDispatch, useSelector } from "react-redux";
 import GroceriesSlice from "./src/slices/GroceriesSlice";
 import {
   CardStyleInterpolators,
   createStackNavigator,
 } from "@react-navigation/stack";
-import AuthSlice from "./src/slices/AuthSlice";
+import AuthSlice, { setToken } from "./src/slices/AuthSlice";
 import MenuSlice from "./src/slices/MenuSlice";
+import { useState } from "react";
+import { MenuItemDetail } from "./src/components";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -157,7 +160,23 @@ const BottomTabs = () => {
 };
 
 function StartUp() {
+  const [localToken, setLocalToken] = useState(null);
+  const dispatch = useDispatch();
+  const Stack = createStackNavigator();
+
   const token = useSelector((state) => state.Auth.token);
+
+  useEffect(() => {
+    async function getToken() {
+      AsyncStorage.getItem("token").then((token) => {
+        if (token) {
+          setLocalToken(token);
+          dispatch(setToken({ token }));
+        }
+      });
+    }
+    getToken();
+  }, []);
 
   let [fontsLoaded] = useFonts({
     "Jost-800": require("./assets/fonts/static/Jost-ExtraBold.ttf"),
@@ -193,7 +212,27 @@ function StartUp() {
 
   return (
     <PaperProvider>
-      {token == null ? <AuthStack /> : <BottomTabs />}
+      {token == null ? (
+        <AuthStack />
+      ) : (
+        <Stack.Navigator
+          screenOptions={{
+            cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+          }}
+        >
+          <Stack.Screen
+            name="Home"
+            component={BottomTabs}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="MenuItemDetail"
+            component={MenuItemDetail}
+            options={{ headerShown: false }}
+          />
+        </Stack.Navigator>
+      )}
+
       {/* <Rating /> */}
       {/* <ReConfirm /> */}
     </PaperProvider>
