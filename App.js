@@ -120,7 +120,7 @@ const RecipesStack = () => {
 const BottomTabs = () => {
   const Tab = createBottomTabNavigator();
   const { width, height } = Dimensions.get("screen");
-  const tabBarHeight = Platform.OS === "ios" ? height * 0.1 : height * 0.08;
+  const tabBarHeight = Platform.OS === "ios" ? height * 0.12 : height * 0.08;
   return (
     <Tab.Navigator
       screenOptions={{
