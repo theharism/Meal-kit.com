@@ -53,7 +53,6 @@ export const GroceriesSlice = createSlice({
       const newItem = action.payload.id;
 
       state.selectedItems.push(newItem); // Push the new item to the selectedItems array
-      console.log(state.selectedItems);
     },
     removeSelectedIngredients: (state, action) => {
       const itemToRemove = action.payload.id;

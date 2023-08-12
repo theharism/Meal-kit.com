@@ -283,7 +283,7 @@ const Signup = ({ navigation }) => {
             <TouchableOpacity
               style={{
                 borderRadius: 5,
-                height: 60,
+                height: height * 0.073,
                 width: width * 0.95,
                 backgroundColor: COLORS.primaryBackground,
                 justifyContent: "center",

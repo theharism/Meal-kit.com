@@ -31,6 +31,7 @@ import AuthSlice, { setToken } from "./src/slices/AuthSlice";
 import MenuSlice, { addPurchasedRecipe } from "./src/slices/MenuSlice";
 import { useState } from "react";
 import { MenuItemDetail } from "./src/components";
+import { Platform } from "react-native";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -119,20 +120,25 @@ const RecipesStack = () => {
 const BottomTabs = () => {
   const Tab = createBottomTabNavigator();
   const { width, height } = Dimensions.get("screen");
-
+  const tabBarHeight = Platform.OS === "ios" ? height * 0.1 : height * 0.08;
   return (
     <Tab.Navigator
       screenOptions={{
         tabBarHideOnKeyboard: true,
         tabBarStyle: {
           width: "auto",
-          margin: 0,
           paddingHorizontal: 70,
-          height: height * 0.075,
+          height: tabBarHeight,
         },
-        tabBarItemStyle: { marginVertical: 8 },
+
         tabBarLabelStyle: {
+          fontFamily: "Jost-500",
           fontSize: 12,
+          color: "#393939",
+          marginBottom: 15,
+        },
+        tabBarIconStyle: {
+          marginTop: 5, // Adjust the spacing between icon and label
         },
         tabBarActiveTintColor: COLORS.black,
       }}
@@ -152,11 +158,6 @@ const BottomTabs = () => {
               style={{ width: 30, height: 30 }}
             />
           ),
-          tabBarLabelStyle: {
-            fontFamily: "Jost-500",
-            fontSize: 12,
-            color: "#393939",
-          },
         }}
       />
 
@@ -178,11 +179,6 @@ const BottomTabs = () => {
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="md-restaurant" color={color} size={size} />
           ),
-          tabBarLabelStyle: {
-            fontFamily: "Jost-500",
-            fontSize: 12,
-            color: "#393939",
-          },
         }}
       />
       <Tab.Screen
@@ -208,11 +204,6 @@ const BottomTabs = () => {
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="ios-cart" color={color} size={size} />
           ),
-          tabBarLabelStyle: {
-            fontFamily: "Jost-500",
-            fontSize: 12,
-            color: "#393939",
-          },
         }}
       />
     </Tab.Navigator>

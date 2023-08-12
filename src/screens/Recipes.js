@@ -114,8 +114,16 @@ const Recipes = ({ navigation }) => {
         translucent={true}
         backgroundColor={COLORS.primaryBackground}
       />
-      <KeyboardAvoidingView style={styles.keyboardAvoidingContainer}>
-        <ScrollView contentContainerStyle={styles.scrollContainer}>
+      <KeyboardAvoidingView
+        style={styles.keyboardAvoidingContainer}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}
+      >
+        <ScrollView
+          contentContainerStyle={styles.scrollContainer}
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={{ marginTop: 200 }} />
           <Text variant="headlineLarge" style={styles.title}>
             Make Your Own Meal-kit.com
           </Text>
@@ -182,6 +190,7 @@ const Recipes = ({ navigation }) => {
               <Text style={styles.buttonText}>GO</Text>
             )}
           </TouchableOpacity>
+          <View style={{ marginBottom: 200 }} />
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
