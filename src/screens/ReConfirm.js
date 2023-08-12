@@ -6,9 +6,10 @@ import {
   StatusBar,
   ToastAndroid,
   ActivityIndicator,
+  Animated,
   TouchableOpacity,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { COLORS } from "../constants/COLORS";
 import { Divider } from "react-native-paper";
 
@@ -23,10 +24,28 @@ const ReConfirm = ({ navigation }) => {
   const selectedItems = useSelector((state) => state.Groceries.selectedItems);
   const token = useSelector((state) => state.Auth.token);
   const [loading, setLoading] = useState(false);
+  const flatListRef = useRef(null);
+  const scrollAnimationValue = useRef(new Animated.Value(0)).current;
 
   const dispatch = useDispatch();
 
   const apiUrl = "https://api.makeyourownmealkit.com/v1/inventory/delete.php";
+
+  useEffect(() => {
+    // Animating the scroll position with a bounce effect
+    Animated.sequence([
+      Animated.timing(scrollAnimationValue, {
+        toValue: 50, // Bounce down by 50 units
+        duration: 1000,
+        useNativeDriver: false,
+      }),
+      Animated.timing(scrollAnimationValue, {
+        toValue: 0,
+        duration: 1000,
+        useNativeDriver: false,
+      }),
+    ]).start();
+  }, []);
 
   const deleteServerIngredients = () => {
     setLoading(true);
@@ -102,7 +121,25 @@ const ReConfirm = ({ navigation }) => {
       </View>
 
       <Divider horizontalInset />
+      <Animated.View
+        style={{
+          position: "absolute",
+          top: 70,
+          left: 0,
+          right: 0,
+          alignItems: "center",
+          opacity: scrollAnimationValue.interpolate({
+            inputRange: [0, 50],
+            outputRange: [1, 0],
+          }),
+        }}
+      >
+        <Text style={{ fontSize: 16, color: "gray" }}>
+          Scroll to explore more!
+        </Text>
+      </Animated.View>
       <FlatList
+        ref={flatListRef}
         data={GroceriesItems}
         renderItem={({ item }) => (
           <GroceriesItem
