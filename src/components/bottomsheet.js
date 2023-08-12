@@ -9,14 +9,12 @@ import { COLORS } from "../constants/COLORS";
 import { useDispatch } from "react-redux";
 import { ToastAndroid } from "react-native";
 import { addItem } from "../slices/GroceriesSlice";
+import { Keyboard } from "react-native";
 
 const CustomBottomSheet = ({ assetBottomSheet }) => {
-  const snapPoints = useMemo(() => ["40%", "80%"], []);
-  const navigation = useNavigation();
+  const snapPoints = useMemo(() => ["60%"], []);
 
   const [title, setTitle] = useState("");
-  const [price, setPrice] = useState("");
-  const [quantity, setQuantity] = useState("");
 
   const dispatch = useDispatch();
 
@@ -50,40 +48,6 @@ const CustomBottomSheet = ({ assetBottomSheet }) => {
             fontSize: 16,
           }}
         />
-        <TextInput
-          label="Item Price"
-          value={price}
-          mode="outlined"
-          keyboardType="number-pad"
-          outlineStyle={styles.outline}
-          outlineColor={COLORS.secondaryBackground}
-          activeOutlineColor={COLORS.secondaryBackground}
-          style={styles.input}
-          theme={styles.theme}
-          textColor={COLORS.secondaryBackground}
-          onChangeText={(price) => setPrice(price)}
-          contentStyle={{
-            fontFamily: "Jost-400",
-            fontSize: 16,
-          }}
-        />
-        <TextInput
-          label="Item Quantity"
-          value={quantity}
-          mode="outlined"
-          keyboardType="number-pad"
-          outlineStyle={styles.outline}
-          outlineColor={COLORS.secondaryBackground}
-          activeOutlineColor={COLORS.secondaryBackground}
-          style={styles.input}
-          theme={styles.theme}
-          textColor={COLORS.secondaryBackground}
-          onChangeText={(quantity) => setQuantity(quantity)}
-          contentStyle={{
-            fontFamily: "Jost-400",
-            fontSize: 16,
-          }}
-        />
 
         <Button
           mode="contained"
@@ -98,12 +62,9 @@ const CustomBottomSheet = ({ assetBottomSheet }) => {
           textColor={COLORS.secondaryText}
           labelStyle={{ fontSize: 17, fontFamily: "Jost-400" }}
           onPress={() => {
-            if (
-              title.length > 2 &&
-              parseFloat(price) > 0 &&
-              parseFloat(quantity) > 0
-            ) {
-              dispatch(addItem({ name: title, price, grams: quantity }));
+            if (title.length > 2) {
+              dispatch(addItem({ name: title }));
+              Keyboard.dismiss();
               assetBottomSheet.current.close();
             } else
               ToastAndroid.show("Enter Correct Values", ToastAndroid.SHORT);

@@ -38,7 +38,6 @@ const Results = ({ navigation }) => {
   const token = route.params?.token;
   const budget = route.params?.budget;
   const meal = route.params?.meal;
-
   const dispatch = useDispatch();
 
   const apiUrl =
@@ -339,6 +338,7 @@ const Results = ({ navigation }) => {
                   title={item.title}
                   price={item.price}
                   time={item.time}
+                  navigation={navigation}
                 />
               );
             }

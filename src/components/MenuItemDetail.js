@@ -3,6 +3,7 @@ import {
   Text,
   View,
   Image,
+  ToastAndroid,
   Dimensions,
   ActivityIndicator,
   TouchableOpacity,
@@ -21,7 +22,8 @@ import {
 } from "@expo/vector-icons";
 import { useDispatch } from "react-redux";
 import { resetToken } from "../slices/AuthSlice";
-import * as Linking from "expo-linking";
+
+import * as WebBrowser from "expo-web-browser";
 
 const apiUrl = "https://api.makeyourownmealkit.com/v1/recipes/get.php";
 
@@ -73,7 +75,7 @@ const ButtonRow = ({ selectedButton, setSelectedButton, url }) => {
       <CustomButton
         label="Method"
         isSelected={selectedButton === "Method"}
-        onPress={() => handleOpenLink(url)}
+        onPress={() => WebBrowser.openBrowserAsync(url)}
       />
       <CustomButton
         label="Ingredients"
@@ -110,7 +112,8 @@ const renderItem = ({ item }) => (
       <Text style={styles.name}>{item.ingredient.name}</Text>
     </View>
     <Text style={styles.quantity}>
-      {item.match_quantity} {getShortForm(item.match_type)}
+      {item.ingredient.display_quantity}{" "}
+      {getShortForm(item.ingredient.display_name)}
     </Text>
   </View>
 );

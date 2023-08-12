@@ -32,7 +32,6 @@ const ReConfirm = ({ navigation }) => {
     setLoading(true);
 
     function deleteUserInventoryIngredient(token, id) {
-      console.log(token, id);
       return new Promise((resolve, reject) => {
         const data = new URLSearchParams();
         data.append("token", token);
@@ -108,8 +107,9 @@ const ReConfirm = ({ navigation }) => {
         renderItem={({ item }) => (
           <GroceriesItem
             title={item.ingredient.name}
-            subTitle={item.ingredient.grams}
+            subTitle={item.ingredient.display_quantity}
             id={item.ingredient.id}
+            unit={item.ingredient.display_name}
           />
         )}
         showsVerticalScrollIndicator={false}

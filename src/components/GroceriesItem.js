@@ -7,8 +7,9 @@ import {
   removeSelectedIngredients,
 } from "../slices/GroceriesSlice";
 import { useDispatch } from "react-redux";
+import { CheckBox } from "@rneui/themed";
 
-const GroceriesItem = ({ id, title, subTitle, price }) => {
+const GroceriesItem = ({ id, title, subTitle, price, unit }) => {
   const [checked, setChecked] = useState(false);
 
   const dispatch = useDispatch();
@@ -39,11 +40,19 @@ const GroceriesItem = ({ id, title, subTitle, price }) => {
       }}
     >
       <View style={{ flexDirection: "row", alignItems: "center" }}>
-        <Checkbox
-          status={checked ? "checked" : "unchecked"}
+        <CheckBox
+          checked={checked}
           onPress={handleCheckboxToggle}
-          uncheckedColor="black"
-          color={COLORS.primaryBackground}
+          uncheckedColor={COLORS.primaryBackground}
+          checkedColor={COLORS.primaryBackground}
+          containerStyle={{
+            backgroundColor: "transparent",
+          }}
+          wrapperStyle={{
+            width: 10,
+            height: 25,
+          }}
+          center
         />
         <View>
           <Text
@@ -64,7 +73,7 @@ const GroceriesItem = ({ id, title, subTitle, price }) => {
               color: "rgba(0,0,0,0.4)",
             }}
           >
-            {subTitle} gm
+            {subTitle} {unit}
           </Text>
         </View>
       </View>

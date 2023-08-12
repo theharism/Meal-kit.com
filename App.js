@@ -243,6 +243,7 @@ function StartUp() {
       });
       // await AsyncStorage.removeItem("Menu");
       //await AsyncStorage.removeItem("Groceries");
+      //await AsyncStorage.removeItem("token");
     }
     getLocalData();
   }, []);

@@ -16,6 +16,7 @@ import { useRoute } from "@react-navigation/native";
 import { ToastAndroid } from "react-native";
 import { useDispatch } from "react-redux";
 import { completePurchasedRecipe } from "../slices/MenuSlice";
+import { ScrollView } from "react-native";
 
 const Rating = ({ navigation }) => {
   const [comment, setComment] = useState("");
@@ -44,97 +45,111 @@ const Rating = ({ navigation }) => {
     >
       <StatusBar translucent backgroundColor={COLORS.primaryBackground} />
 
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-          marginHorizontal: 14,
-          marginTop: 20,
-        }}
+      <KeyboardAvoidingView
+        style={{ flex: 1, justifyContent: "space-between" }}
+        behavior={Platform.OS === "ios" ? "padding" : "null"}
+        enabled
       >
-        <Text style={{ fontFamily: "Jost-500", fontSize: 16 }}>
-          Rate your experience
-        </Text>
-        <AirbnbRating
-          count={5}
-          showRating={false}
-          size={24}
-          selectedColor={COLORS.primaryBackground}
-        />
-      </View>
-
-      <TextInput
-        style={styles.input}
-        onChangeText={setComment}
-        value={comment}
-        placeholder="Leave a Comment"
-        keyboardType="default"
-        multiline
-        numberOfLines={5}
-        textAlignVertical="top"
-      />
-
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-          marginHorizontal: 14,
-        }}
-      >
-        <Text style={{ fontFamily: "Jost-500", fontSize: 16 }}>
-          Automatically share on your feed
-        </Text>
-        <Switch
-          value={isSwitchOn}
-          onValueChange={onToggleSwitch}
-          color="black"
-        />
-      </View>
-
-      <TouchableOpacity
-        style={{
-          margin: 10,
-          marginTop: 70,
-          borderRadius: 5,
-          height: 60,
-          backgroundColor: COLORS.primaryBackground,
-          justifyContent: "center",
-          alignItems: "center",
-          shadowColor: "#000000", // Shadow color
-          shadowOffset: { width: 0, height: 2 }, // Shadow offset
-          shadowOpacity: 0.4, // Shadow opacity
-          shadowRadius: 10, // Shadow radius
-          elevation: 5, // Elevation for Android
-        }}
-        onPress={removeRecipe}
-      >
-        <Text
-          style={{
-            fontFamily: "Jost-600",
-            fontSize: 16,
-            letterSpacing: 1,
-            color: COLORS.primaryText,
+        <ScrollView
+          contentContainerStyle={{
+            flexGrow: 1,
+            height: Platform.OS == "ios" && height,
           }}
+          keyboardShouldPersistTaps="handled"
         >
-          Confirm
-        </Text>
-      </TouchableOpacity>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+              marginHorizontal: 14,
+              marginTop: 20,
+            }}
+          >
+            <Text style={{ fontFamily: "Jost-500", fontSize: 16 }}>
+              Rate your experience
+            </Text>
+            <AirbnbRating
+              count={5}
+              showRating={false}
+              size={24}
+              selectedColor={COLORS.primaryBackground}
+            />
+          </View>
 
-      <View
-        style={{
-          width,
-          marginTop: 30,
-          alignItems: "center",
-        }}
-      >
-        <Text
-          style={{ fontFamily: "Jost-400", fontSize: 14, color: "#999999" }}
-        >
-          Your inventory will be automatically updated after this
-        </Text>
-      </View>
+          <TextInput
+            style={styles.input}
+            onChangeText={setComment}
+            value={comment}
+            placeholder="Leave a Comment"
+            keyboardType="default"
+            multiline
+            numberOfLines={5}
+            textAlignVertical="top"
+          />
+
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+              marginHorizontal: 14,
+            }}
+          >
+            <Text style={{ fontFamily: "Jost-500", fontSize: 16 }}>
+              Automatically share on your feed
+            </Text>
+            <Switch
+              value={isSwitchOn}
+              onValueChange={onToggleSwitch}
+              color="black"
+            />
+          </View>
+
+          <TouchableOpacity
+            style={{
+              margin: 10,
+              marginTop: 70,
+              borderRadius: 5,
+              height: 60,
+              backgroundColor: COLORS.primaryBackground,
+              justifyContent: "center",
+              alignItems: "center",
+              shadowColor: "#000000", // Shadow color
+              shadowOffset: { width: 0, height: 2 }, // Shadow offset
+              shadowOpacity: 0.4, // Shadow opacity
+              shadowRadius: 10, // Shadow radius
+              elevation: 5, // Elevation for Android
+            }}
+            onPress={removeRecipe}
+          >
+            <Text
+              style={{
+                fontFamily: "Jost-600",
+                fontSize: 16,
+                letterSpacing: 1,
+                color: COLORS.primaryText,
+              }}
+            >
+              Confirm
+            </Text>
+          </TouchableOpacity>
+
+          <View
+            style={{
+              width,
+              marginTop: 30,
+              alignItems: "center",
+            }}
+          >
+            <Text
+              style={{ fontFamily: "Jost-400", fontSize: 14, color: "#999999" }}
+            >
+              Your inventory will be automatically updated after this
+            </Text>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };

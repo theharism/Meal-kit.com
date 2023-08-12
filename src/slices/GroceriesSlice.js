@@ -21,8 +21,6 @@ export const GroceriesSlice = createSlice({
         ingredient: {
           id: randomString,
           name: action.payload.name,
-          grams: action.payload.grams,
-          price: action.payload.price,
         },
       };
       state.ingredients.push(item);

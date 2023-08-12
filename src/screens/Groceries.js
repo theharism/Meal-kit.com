@@ -79,7 +79,7 @@ const Groceries = () => {
   };
 
   const openSheet = () => {
-    assetBottomSheet.current?.snapToIndex(1);
+    assetBottomSheet.current?.snapToIndex(0);
   };
 
   const assetBottomSheet = useRef(null);
@@ -159,7 +159,8 @@ const Groceries = () => {
           renderItem={({ item }) => (
             <GroceriesItem
               title={item.ingredient.name}
-              subTitle={item.ingredient.grams}
+              subTitle={item.ingredient.display_quantity}
+              unit={item.ingredient.display_name}
               id={item.ingredient.id}
               price={item.ingredient.price}
             />

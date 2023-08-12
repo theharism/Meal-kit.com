@@ -27,6 +27,7 @@ const Recipes = ({ navigation }) => {
 
   const dispatch = useDispatch();
   const token = useSelector((state) => state.Auth.token);
+
   const ingredients = useSelector((state) => state.Groceries.ingredients);
   const groceriesuseInventory = useSelector(
     (state) => state.Groceries.use_inventory
@@ -73,20 +74,33 @@ const Recipes = ({ navigation }) => {
           }
         } else {
           const dispatchSetMenu = async () => {
-            return new Promise((resolve) => {
+            return new Promise((resolve, reject) => {
               const recipes = body.recipes;
               const total_price = body.total_price;
               const bonus = body.bonus;
               const inventory = body.inventory;
+
+              if (recipes.length == 0) {
+                reject("Low Budget");
+              }
 
               dispatch(setMenu({ recipes, total_price, bonus, inventory }));
               resolve();
             });
           };
 
-          dispatchSetMenu().then(() => {
-            navigation.navigate("Results", { token, budget, meal });
-          });
+          dispatchSetMenu()
+            .then(
+              function () {
+                navigation.navigate("Results", { token, budget, meal });
+              },
+              function (error) {
+                ToastAndroid.show(error, ToastAndroid.SHORT);
+              }
+            )
+            .catch((error) => {
+              ToastAndroid.show(error, ToastAndroid.LONG);
+            });
         }
       })
       .catch((error) => {

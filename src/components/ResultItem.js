@@ -12,8 +12,9 @@ import { LinearGradient } from "expo-linear-gradient";
 import { COLORS } from "../constants/COLORS";
 import { useDispatch } from "react-redux";
 import { addSelectedItems, removeSelectedItem } from "../slices/MenuSlice";
+import { CheckBox } from "@rneui/themed";
 
-const ResultItem = ({ id, image, title, time, price }) => {
+const ResultItem = ({ id, image, title, time, price, navigation }) => {
   const { width } = Dimensions.get("screen");
   const [checked, setChecked] = useState(false);
 
@@ -22,6 +23,10 @@ const ResultItem = ({ id, image, title, time, price }) => {
   useEffect(() => {
     dispatch(addSelectedItems({ id }));
   }, []);
+
+  useEffect(() => {
+    setChecked(false);
+  }, [id]);
 
   const handleCheckboxToggle = () => {
     setChecked(!checked); // Toggle the checkbox state
@@ -41,13 +46,22 @@ const ResultItem = ({ id, image, title, time, price }) => {
         //alignItems: "flex-start",
       }}
     >
-      <Pressable onPress={handleCheckboxToggle}>
+      <Pressable onPress={() => navigation.navigate("MenuItemDetail", { id })}>
         <View style={{ position: "absolute", zIndex: 9 }}>
-          <Checkbox
-            status={checked ? "checked" : "unchecked"}
+          <CheckBox
+            checked={checked}
             onPress={handleCheckboxToggle}
             uncheckedColor={COLORS.secondaryBackground}
-            color={COLORS.primaryBackground}
+            checkedColor={COLORS.black}
+            containerStyle={{
+              backgroundColor: "transparent",
+            }}
+            wrapperStyle={{
+              width: 10,
+              height: 25,
+            }}
+            size={25}
+            center
           />
         </View>
         <Image
