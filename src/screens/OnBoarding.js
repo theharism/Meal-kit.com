@@ -45,7 +45,7 @@ const OnBoarding = ({ navigation }) => {
             marginTop: 20,
           }}
         >
-          MakeYourOwnMealKit.com
+          Mealkitmaker
         </Text>
         {/* <Text
         style={{
@@ -156,8 +156,7 @@ const OnBoarding = ({ navigation }) => {
             width: width * 0.9,
           }}
         >
-          By continuing you acknowledge to have read and agree with{" "}
-          MakeYourOwnMealKit.com{" "}
+          By continuing you acknowledge to have read and agree with Mealkitmaker{" "}
           <TouchableOpacity onPress={handleTermsOfServicePress}>
             <Text
               style={{
