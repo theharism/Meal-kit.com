@@ -118,17 +118,6 @@ const renderItem = ({ item }) => (
   </View>
 );
 
-const handleOpenLink = async (url) => {
-  // Check if the link is supported on the device
-  const supported = await Linking.canOpenURL(url);
-  if (supported) {
-    // Open the link
-    await Linking.openURL(url);
-  } else {
-    ToastAndroid.show("Cannot open the link.", ToastAndroid.SHORT);
-  }
-};
-
 const MenuItemDetail = ({ navigation }) => {
   const route = useRoute();
   const id = route.params?.id;

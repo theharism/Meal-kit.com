@@ -184,12 +184,11 @@ const Results = ({ navigation }) => {
           <Text
             style={{
               fontFamily: "Jost-700",
-              fontSize: 22,
-              letterSpacing: 1,
-              color: "#393939",
+              fontSize: 18,
+              color: "#000000",
             }}
           >
-            BUY THIS PLAN ${total_price.toFixed(2)}
+            SAVE PLAN AND LEFTOVERS ${total_price.toFixed(2)}
           </Text>
         )}
       </TouchableOpacity>
@@ -252,7 +251,9 @@ const Results = ({ navigation }) => {
         style={{
           flex: 0.21,
           justifyContent: "flex-end",
+          alignItems: "center",
           backgroundColor: COLORS.primaryBackground,
+          marginHorizontal: 20,
         }}
       >
         <Text
@@ -261,15 +262,16 @@ const Results = ({ navigation }) => {
             fontSize: 22,
             color: COLORS.primaryText,
             marginHorizontal: 10,
-            marginVertical: 5,
+            marginTop: 5,
+            marginBottom: 10,
           }}
         >
-          Result:
+          Weekly Menu
         </Text>
         <View
           style={{
             marginHorizontal: 10,
-            marginVertical: 5,
+            marginVertical: 2,
             alignItems: "center",
             flexDirection: "row",
           }}
@@ -281,7 +283,7 @@ const Results = ({ navigation }) => {
               color: COLORS.primaryText,
             }}
           >
-            Grocery Cost:{" "}
+            GROCERY COST:{"      "}
           </Text>
           <Text
             style={{
@@ -297,8 +299,7 @@ const Results = ({ navigation }) => {
           style={{
             marginHorizontal: 10,
             alignItems: "center",
-            marginTop: 5,
-            marginBottom: 10,
+            marginVertical: 2,
             flexDirection: "row",
           }}
         >
@@ -309,7 +310,35 @@ const Results = ({ navigation }) => {
               color: COLORS.primaryText,
             }}
           >
-            Bonus Ingredients:{" "}
+            USED IN RECIPES:{"     "}
+          </Text>
+          <Text
+            style={{
+              fontFamily: "Jost-700",
+              fontSize: 16,
+              color: COLORS.primaryText,
+            }}
+          >
+            ${bonus.toFixed(2)}
+          </Text>
+        </View>
+        <View
+          style={{
+            marginHorizontal: 10,
+            alignItems: "center",
+            marginTop: 2,
+            marginBottom: 5,
+            flexDirection: "row",
+          }}
+        >
+          <Text
+            style={{
+              fontFamily: "Jost-400",
+              fontSize: 16,
+              color: COLORS.primaryText,
+            }}
+          >
+            LEFTOVER:{"                "}
           </Text>
           <Text
             style={{
@@ -327,7 +356,7 @@ const Results = ({ navigation }) => {
         <FlatList
           data={[...recipes, { id: "footer" }]} // Add a dummy footer item
           keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => {
+          renderItem={({ item, index }) => {
             if (item.id === "footer") {
               return footerComponent;
             } else {
@@ -338,7 +367,9 @@ const Results = ({ navigation }) => {
                   title={item.title}
                   price={item.price}
                   time={item.time}
+                  servings={item.servings}
                   navigation={navigation}
+                  day={(index + 1) % 6 || 6}
                 />
               );
             }
