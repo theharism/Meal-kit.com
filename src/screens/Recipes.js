@@ -76,6 +76,7 @@ const Recipes = ({ navigation }) => {
           const dispatchSetMenu = async () => {
             return new Promise((resolve, reject) => {
               const recipes = body.recipes;
+
               const total_price = body.total_price;
               const bonus = body.bonus;
               const inventory = body.inventory;

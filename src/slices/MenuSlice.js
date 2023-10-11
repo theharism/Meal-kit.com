@@ -23,7 +23,7 @@ export const MenuSlice = createSlice({
           await AsyncStorage.setItem("Menu", jsonValue);
         }
         if (save) {
-          write().then(() => console.log("done Menu"));
+          write();
         }
       }
     },
@@ -39,7 +39,7 @@ export const MenuSlice = createSlice({
         const jsonValue = JSON.stringify(updatedPurchasedRecipes);
         await AsyncStorage.setItem("Menu", jsonValue);
       }
-      write().then(() => console.log("done Menu"));
+      write();
 
       return {
         ...state,

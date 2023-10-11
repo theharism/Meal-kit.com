@@ -125,7 +125,7 @@ const ResultItem = ({
         return matchType;
     }
   };
-  const renderItem = (item) => (
+  const RenderItem = ({ key, item }) => (
     <View style={styles.item}>
       <View
         style={{
@@ -220,14 +220,20 @@ const ResultItem = ({
             Feeds {servings}
           </Text>
 
-          {ingredients.map((item, index) => renderItem(item))}
+          {ingredients.map((item, index) => (
+            <RenderItem key={index} item={item} />
+          ))}
         </View>
 
         <View
           style={{
             width: 30.01,
             height: 31.01,
-            transform: [{ scaleX: 2 }, { scaleY: 1 }, { rotate: "-38.02deg" }],
+            transform: [
+              { scaleX: 2.5 },
+              { scaleY: 1 },
+              { rotate: "-38.02deg" },
+            ],
             right: 180,
             top: 30,
             backgroundColor: COLORS.primaryBackground, // You can change the background color as desired
@@ -242,7 +248,7 @@ const ResultItem = ({
           <Text
             style={{
               fontFamily: "Jost-700",
-              fontSize: 8,
+              fontSize: 7,
               color: "#fff",
             }}
           >

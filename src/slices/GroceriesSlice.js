@@ -29,7 +29,7 @@ export const GroceriesSlice = createSlice({
         await AsyncStorage.setItem("Groceries", jsonValue);
       }
 
-      write().then(() => console.log("done Groceries"));
+      write();
     },
     appendIngredients: (state, action) => {
       const data = action.payload.inventory;
@@ -43,7 +43,7 @@ export const GroceriesSlice = createSlice({
           await AsyncStorage.setItem("Groceries", jsonValue);
         }
         if (save) {
-          write().then(() => console.log("done Groceries"));
+          write();
         }
       }
     },
@@ -73,7 +73,7 @@ export const GroceriesSlice = createSlice({
         await AsyncStorage.setItem("Groceries", jsonValue);
       }
 
-      write().then(() => console.log("done Groceries"));
+      write();
     },
     setItems: (state, action) => {
       return {

@@ -15,7 +15,7 @@ export const AuthSlice = createSlice({
       async function write() {
         await AsyncStorage.removeItem("token");
       }
-      write().then(() => console.log("done"));
+      write();
     },
   },
 });
